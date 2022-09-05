@@ -1,0 +1,223 @@
+<!DOCTYPE HTML>
+<html>
+
+<style>
+    body {
+        padding: 25px;
+        background-color: black;
+        color: white;
+        font-size: 25px;
+    }
+
+    .dark-mode {
+        background-color: white;
+        color: black;
+    }
+</style>
+
+<body>
+
+    <!--
+        Dynamic page HTML setup
+    -->
+    <script>
+
+        //Validate the hex color is good
+        function isHexOk(hex) {
+            return (hex.length == 6);
+        }
+
+        function lightMode() {
+            var element = document.body;
+            element.classList.toggle("dark-mode");
+        }
+
+        function createCodeDiv(index) {
+            var div = document.createElement('div');
+            div.id = 'code_box' + index;
+
+            //Create the applicable label for the code entering box
+            var label = document.createElement('label');
+            label.for = 'code_input' + index;
+            label.innerHTML = 'Code ' + (index + 1) + ':';
+            //Add padding between label and input
+            label.style.paddingRight = '10px';
+
+            //Create the color preview panes
+            var colorPreview = document.createElement('input');
+            colorPreview.type = 'input';
+            colorPreview.id = 'color_preview' + index;
+            colorPreview.style = "background-color: #000000; width: 22px; height: 22px; border: 1px solid black;";
+
+            //Create code entering box
+            var rawIn = document.createElement('input');
+            rawIn.index = index;
+            rawIn.type = 'text';
+            rawIn.id = 'code_input' + index;
+            rawIn.style = "text-transform: uppercase;"
+            //rawIn.onchange = function(){ colorPreview.style.backgroundColor = (isHexOk(this.value) ? "#" + this.value : "#000000");};
+            rawIn.onkeyup = function () { colorPreview.style.backgroundColor = (isHexOk(this.value) ? "#" + this.value : "#000000"); };
+
+            //Only allow valid hex chars as codes
+            rawIn.addEventListener('keypress', function inputKeyPress(event) {
+
+                var key = event.keyCode || event.charCode;
+
+                if (key == 8 || key == 9 || key == 13 || key == 46 || key == 37 || key == 39) {
+                    return true;
+                }
+
+                //Input can only be 6 chars long
+                if (this.value.length >= 6) {
+                    event.preventDefault();
+                    return false;
+                }
+
+                var regex = new RegExp("^[A-Fa-f0-9]+$");
+                var keyChar = String.fromCharCode(key);
+
+                if (!regex.test(keyChar)) {
+                    event.preventDefault();
+                    return false;
+                }
+            });
+
+
+            div.appendChild(label);
+            div.appendChild(rawIn);
+            div.appendChild(colorPreview);
+
+            document.body.appendChild(div);
+        }
+
+        for (var i = 0; i < 6; i++) {
+            createCodeDiv(i);
+        }
+
+    </script>
+
+    <!--
+        Blending functions
+    -->
+    <script>
+        function findSplitLengths(word, numSplits) {
+
+            //List of lengths of each split
+            var solutions = [];
+
+            var roughSolution = parseInt(Math.ceil(parseFloat(word.length) / numSplits), 10);
+            var remaining = word.length;
+
+            var reduced = false;
+
+            for (var i = 0; i < numSplits; ++i) {
+                var x = (roughSolution - 1) * (numSplits - i);
+                if (!reduced && x === remaining) {
+                    roughSolution -= 1;
+                    reduced = true;
+                }
+
+                solutions.push(roughSolution);
+                remaining -= roughSolution;
+            }
+
+            return solutions;
+        }
+
+        function findSplits(rightJustified, splitsLengths, input) {
+
+            var result = [];
+            if (rightJustified) splitsLengths = splitsLengths.reverse();
+
+            var newIndex = 0;
+            for (var i = 0; i < splitsLengths.length; i++) {
+                result[i] = input.substring(newIndex, newIndex + splitsLengths[i]);
+                newIndex += splitsLengths[i];
+            }
+
+            return result;
+        }
+
+        function blendTwo(hexOne, hexTwo, input) {
+
+            //Start to compile the output
+            var output = "";
+
+            //Put the R, G, and B values for each into an array
+            componentsOne = [hexR(hexOne), hexG(hexOne), hexB(hexOne)];
+            componentsDif = [hexR(hexTwo) - hexR(hexOne), hexG(hexTwo) - hexG(hexOne), hexB(hexTwo) - hexB(hexOne)];
+
+            //Loop through each step
+            for (var j = 0; j <= (input.length - 1); ++j) {
+                output += "&#";
+                for (var i = 0; i < 3; i++) {
+                    output += pad(componentsOne[i] + (componentsDif[i] * (j / (input.length - 1)))).toLocaleUpperCase();
+                }
+                output += input[j];
+            }
+
+            return output;
+        }
+
+        function blendMain(howManyCodes, input, codeList, rightJustified) {
+
+            //Create an output
+            var output = "";
+            var splitLengths = findSplitLengths(input, (howManyCodes - 1));
+            var splits = findSplits(rightJustified, splitLengths, input);
+
+            for (var i = 0, codeIndex = 0; i < splits.length; i++, codeIndex++) {
+                if (i !== (splits.length - 1)) splits[i] = (splits[i] + splits[i + 1].substring(0, 1));
+
+                var addendum = blendTwo(codeList[codeIndex], codeList[codeIndex + 1], splits[i]);
+                output += (i !== (splits.length - 1) ? addendum.substring(0, addendum.length - 9) : addendum);
+            }
+
+            return output;
+        }
+
+        function pad(input) {
+
+            var hex = Math.round(input).toString(16);
+            return (hex.length === 1 ? "0" + hex : hex);
+        }
+
+        function hexR(hex) { return parseInt(hex.substring(0, 2), 16) }
+        function hexG(hex) { return parseInt(hex.substring(2, 4), 16) }
+        function hexB(hex) { return parseInt(hex.substring(4, 6), 16) }
+
+    </script>
+
+    <input type="text" id="main_enter_box" onkeyup="checkInput()">
+    <input type="text" id="output_box">
+
+    <script>
+
+        function checkInput() {
+
+            //Need to be at least 2 valid codes
+            var validCodes = 0;
+
+            //Compile the code fields
+            var codeFields = function(){ var x = []; for (var i = 0; i < 6; i++) { x.push(document.getElementById('code_input' + i)); } return x; }();
+
+            for(var i = 0; i < codeFields.length; i++) {
+                if (isHexOk(codeFields[i].value)) validCodes++;
+            }
+
+            if(validCodes >= 2 && (document.getElementById('main_enter_box').value.length >= (validCodes * 2) - 1)){
+
+                var output = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(function (x) { return x.value; }), true);
+                document.getElementById('output_box').value = output;
+
+            }
+
+        }
+
+    </script>
+
+    <button onclick="lightMode()" style=''>Toggle Dark Mode</button>
+
+</body>
+
+</html>
