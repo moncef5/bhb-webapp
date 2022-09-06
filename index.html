@@ -55,11 +55,7 @@
         function lightMode() {
             var element = document.body;
             element.classList.toggle("light-mode");
-            element.classList.toggle("light-mode-input");
-            element.classList.toggle("light-mode-button");
-
-            if (darkMode) darkMode = false;
-            else darkMode = true;
+            element.classList.toggle("light-mode-text");
 
             //Update preview backgrounds
             var previews = Array.prototype.slice.call(document.getElementsByClassName("color_preview"));
@@ -71,6 +67,9 @@
                     preview.style.backgroundColor = (darkMode ? lightPreview : darkPreview) 
                 }
             });
+
+            if (darkMode) darkMode = false;
+            else darkMode = true;
 
         }
 
@@ -104,11 +103,11 @@
             colorPreview.classList.add('color_preview');
             colorPreview.style = "width: 22px; height: 22px; border: 2px solid black; border-radius: 2px;";
             //Set the color of the preview pane
-            colorPreview.style.backgroundColor = darkMode ? "#FFFFFF" : "#000000";
+            colorPreview.style.backgroundColor = darkMode ? darkPreview : lightPreview;
             //"Clear" button
             colorPreview.onclick = function () {
                 document.getElementById('code_input' + index).value = '';
-                this.style.backgroundColor = darkMode ? '#FFFFFF' : '#000000';
+                this.style.backgroundColor = darkMode ? darkPreview : lightPreview;
                 checkInput();
             };
 
@@ -120,7 +119,7 @@
             rawIn.style = "text-transform: uppercase; width: 50px; height: 22px; border: 2px solid black; margin-right: 10px; border-radius: 4px;";
             rawIn.style.paddingRight = '10px';
             rawIn.onchange = rawIn.onkeyup = function () {
-                colorPreview.style.backgroundColor = (isHexOk(this.value) ? "#" + this.value : (darkMode ? "#FFFFFF" : "#000000"));
+                colorPreview.style.backgroundColor = (isHexOk(this.value) ? "#" + this.value : (darkMode ? darkPreview : lightPreview));
                 checkInput();
             };
             //Handle tab and shift tab press
@@ -209,6 +208,7 @@
     -->
     <script>
 
+        //Setup the label for the preview
         var label = document.createElement('label');
         label.for = 'preview_box';
         label.innerHTML = 'Preview:';
@@ -216,6 +216,7 @@
         label.style.display = 'none';
         document.body.appendChild(label);
 
+        //Create the master div that will hold the preview label container and the copy button
         var div = document.createElement('div');
         div.id = 'preview_box';
         div.style.padding = '10px';
@@ -227,22 +228,25 @@
         div.style.overflow = 'auto';
         document.body.appendChild(div);
 
+        //Create a secondary div to contain the preview labels
         var div2 = document.createElement('div');
         div2.id = 'preview_label_container';
 
+        //Create the copy button
         var copyButton = document.createElement('input');
         copyButton.type = 'button';
         copyButton.id = 'copy_button';
         copyButton.value = 'Copy to Clipboard';
-        copyButton.style.alignSelf = 'right';
         copyButton.style.display = 'none';
+        //On click, copy the latest compiled output to the clipboard
         copyButton.onclick = function () {
-
             document.getElementById('main_output_box').style.display = 'inline';
             document.getElementById('main_output_box').select();
             document.execCommand('copy');
             document.getElementById('main_output_box').style.display = 'none';
         };
+
+        //Add the secondary div and the copy button to the master div
         div.appendChild(copyButton);
         div.appendChild(div2);
 
@@ -292,8 +296,6 @@
 
             div.appendChild(copyButton);
         }
-
-
 
     </script>
 
