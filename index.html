@@ -1,18 +1,37 @@
 <!DOCTYPE HTML>
 <html>
 
+<script>
+    let darkMode = true;
+
+    let darkPreview = "#7A7A7A";
+    let lightPreview = "#FFFFFF";
+
+    let bhbOutput = '';
+
+</script>
+
 <style>
     body {
         padding: 25px;
-        background-color: black;
-        color: white;
+        background-color: #60646c;
+        color: black;
         font-size: 25px;
     }
 
-    .dark-mode {
+    input[type="text"]{
+        background-color: #989ca4;
+    }
+
+    .light-mode-input input[type="text"]{
         background-color: white;
+    }
+
+    .light-mode {
+        background-color: #f8f4f4;
         color: black;
     }
+
 </style>
 
 <body>
@@ -29,7 +48,35 @@
 
         function lightMode() {
             var element = document.body;
-            element.classList.toggle("dark-mode");
+            element.classList.toggle("light-mode");
+            element.classList.toggle("light-mode-input");
+
+            if (darkMode) darkMode = false;
+            else darkMode = true;
+
+            //Update preview backgrounds
+            var previews = Array.prototype.slice.call(document.getElementsByClassName("color_preview"));
+            previews.forEach(function (preview) {
+
+                var currentColor = rgbToHex(preview.style.backgroundColor);
+
+                if(currentColor == darkPreview || currentColor == lightPreview){
+                    preview.style.backgroundColor = (darkMode ? lightPreview : darkPreview) 
+                }
+            });
+
+        }
+
+        function rgbToHex(col) {
+            if (col.charAt(0) == 'r') {
+                col = col.replace('rgb(', '').replace(')', '').split(',');
+                var r = parseInt(col[0], 10).toString(16);
+                var g = parseInt(col[1], 10).toString(16);
+                var b = parseInt(col[2], 10).toString(16);
+                r = r.length == 1 ? '0' + r : r; g = g.length == 1 ? '0' + g : g; b = b.length == 1 ? '0' + b : b;
+                var colHex = '#' + r + g + b;
+                return colHex.toUpperCase();
+            }
         }
 
         function createCodeDiv(index) {
@@ -45,18 +92,37 @@
 
             //Create the color preview panes
             var colorPreview = document.createElement('input');
-            colorPreview.type = 'input';
+            colorPreview.type = 'button';
             colorPreview.id = 'color_preview' + index;
-            colorPreview.style = "background-color: #000000; width: 22px; height: 22px; border: 1px solid black;";
+            colorPreview.classList.add('color_preview');
+            colorPreview.style = "width: 22px; height: 22px; border: 2px solid black; border-radius: 2px;";
+            //Set the color of the preview pane
+            colorPreview.style.backgroundColor = darkMode ? "#FFFFFF" : "#000000";
+            //"Clear" button
+            colorPreview.onclick = function () {
+                document.getElementById('code_input' + index).value = '';
+                this.style.backgroundColor = darkMode ? '#FFFFFF' : '#000000';
+            };
 
             //Create code entering box
             var rawIn = document.createElement('input');
             rawIn.index = index;
             rawIn.type = 'text';
             rawIn.id = 'code_input' + index;
-            rawIn.style = "text-transform: uppercase;"
-            //rawIn.onchange = function(){ colorPreview.style.backgroundColor = (isHexOk(this.value) ? "#" + this.value : "#000000");};
-            rawIn.onkeyup = function () { colorPreview.style.backgroundColor = (isHexOk(this.value) ? "#" + this.value : "#000000"); };
+            rawIn.style = "text-transform: uppercase; width: 50px; height: 22px; border: 2px solid black; margin-right: 10px; border-radius: 4px;";
+            rawIn.style.paddingRight = '10px';
+            rawIn.onchange = rawIn.onkeyup = function () {
+                colorPreview.style.backgroundColor = (isHexOk(this.value) ? "#" + this.value : (darkMode ? "#FFFFFF" : "#000000"));
+                checkInput();
+            };
+            //Handle tab and shift tab press
+            rawIn.addEventListener('keydown', function (e) {
+                if (e.keyCode == 9) {
+                    e.preventDefault();
+                    if (e.shiftKey && index > 0) document.getElementById('code_input' + (this.index - 1)).focus();
+                    else if (index < 5) document.getElementById('code_input' + (this.index + 1)).focus();
+                }
+            });
 
             //Only allow valid hex chars as codes
             rawIn.addEventListener('keypress', function inputKeyPress(event) {
@@ -90,9 +156,71 @@
             document.body.appendChild(div);
         }
 
+        function checkInput() {
+            //Need to be at least 2 valid codes
+            var validCodes = 0;
+            //Compile the code fields
+            var codeFields = function () { var x = []; for (var i = 0; i < 6; i++) { x.push(document.getElementById('code_input' + i)); } return x; }();
+            //Count number of valid codes
+            codeFields.forEach(el => { if (isHexOk(el.value)) validCodes++; })
+            //Build the preview if conditions are met
+            if (validCodes >= 2 && (document.getElementById('main_enter_box').value.length >= (validCodes * 2) - 1)) {
+                buildPreview(bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(function (x) { return x.value; }), true));
+            }
+        }
+
         for (var i = 0; i < 6; i++) {
             createCodeDiv(i);
         }
+
+    </script>
+
+    <br>
+    <label for="main_enter_box" style="padding-right: 10px;">Input:</label>
+    <input type="text" id="main_enter_box" onkeyup="checkInput()" onchange="checkInput()">
+    <br>
+    <br>
+
+    <!--
+        Dynamic preview building
+    -->
+    <script>
+
+        var div = document.createElement('div');
+        div.id = 'preview_box';
+        document.body.appendChild(div);
+
+        function buildPreview(input) {
+
+            //Clear old preview
+            while (div.firstChild) {
+                div.removeChild(div.firstChild);
+            }
+
+            /*
+                Input will be in the form &#FF00FF{char}, etc., where each character will be preceded by a color code
+                The following code will split the input into an array of corresponding color codes and characters:
+
+                [#FF00FFA, #00FF00B, #0000FFC, etc.]
+            */
+            var inputSplit = input.split("&");
+            //First index will be empty, shift it out
+            inputSplit.shift();
+
+            inputSplit.forEach(element => {
+                var color = element.substring(0, 7);
+                var char = element.substring(7, 8);
+
+                var label = document.createElement('label');
+                label.style = "color: " + color + ";";
+                label.innerText = char;
+
+                document.getElementById('preview_box').appendChild(label);
+            });
+
+        }
+
+
 
     </script>
 
@@ -188,35 +316,8 @@
 
     </script>
 
-    <input type="text" id="main_enter_box" onkeyup="checkInput()">
-    <input type="text" id="output_box">
-
-    <script>
-
-        function checkInput() {
-
-            //Need to be at least 2 valid codes
-            var validCodes = 0;
-
-            //Compile the code fields
-            var codeFields = function(){ var x = []; for (var i = 0; i < 6; i++) { x.push(document.getElementById('code_input' + i)); } return x; }();
-
-            for(var i = 0; i < codeFields.length; i++) {
-                if (isHexOk(codeFields[i].value)) validCodes++;
-            }
-
-            if(validCodes >= 2 && (document.getElementById('main_enter_box').value.length >= (validCodes * 2) - 1)){
-
-                var output = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(function (x) { return x.value; }), true);
-                document.getElementById('output_box').value = output;
-
-            }
-
-        }
-
-    </script>
-
-    <button onclick="lightMode()" style=''>Toggle Dark Mode</button>
+    <br>
+    <button onclick="lightMode()">Toggle Dark Mode</button>
 
 </body>
 
