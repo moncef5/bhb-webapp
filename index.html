@@ -108,6 +108,7 @@
             colorPreview.onclick = function () {
                 document.getElementById('code_input' + index).value = '';
                 this.style.backgroundColor = darkMode ? '#FFFFFF' : '#000000';
+                checkInput();
             };
 
             //Create code entering box
