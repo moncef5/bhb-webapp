@@ -1,5 +1,11 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Blazin's Hex Blender</title>
+    <link rel="icon" type="image/x-icon" href="resources/favicon.ico">
+</head>
 
 <script>
     let darkMode = true;
@@ -121,6 +127,7 @@
                     e.preventDefault();
                     if (e.shiftKey && index > 0) document.getElementById('code_input' + (this.index - 1)).focus();
                     else if (index < 5) document.getElementById('code_input' + (this.index + 1)).focus();
+                    else if (index == 5) document.getElementById('main_enter_box').focus();
                 }
             });
 
@@ -148,11 +155,12 @@
                 }
             });
 
-
+            //Add the label, input, and preview elems to the div
             div.appendChild(label);
             div.appendChild(rawIn);
             div.appendChild(colorPreview);
 
+            //Add the div to the body
             document.body.appendChild(div);
         }
 
@@ -167,6 +175,7 @@
             if (validCodes >= 2 && (document.getElementById('main_enter_box').value.length >= (validCodes * 2) - 1)) {
                 buildPreview(bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(function (x) { return x.value; }), true));
             }
+            else buildPreview(bhbOutput = '');
         }
 
         for (var i = 0; i < 6; i++) {
@@ -177,17 +186,34 @@
 
     <br>
     <label for="main_enter_box" style="padding-right: 10px;">Input:</label>
-    <input type="text" id="main_enter_box" onkeyup="checkInput()" onchange="checkInput()">
-    <br>
-    <br>
+    <input type="text" id="main_enter_box">
+
+    <script>
+        //Bind the input text box to catch all changes
+        var mainInput = document.getElementById('main_enter_box');
+        mainInput.onchange = mainInput.onkeyup = mainInput.onkeydown = mainInput.oninput = mainInput.oncut = mainInput.onpaste = function () {
+            checkInput();
+        };
+    </script>
+
+    <br id="cond-break-1" style="display: none;">
+    <br id="cond-break-2" style="display: none;">
 
     <!--
         Dynamic preview building
     -->
     <script>
 
+        var label = document.createElement('label');
+        label.for = 'preview_box';
+        label.innerHTML = 'Preview:';
+        label.style.paddingRight = '10px';
+        label.style.display = 'none';
+        document.body.appendChild(label);
+
         var div = document.createElement('div');
         div.id = 'preview_box';
+        div.style.padding = '10px';
         document.body.appendChild(div);
 
         function buildPreview(input) {
@@ -217,6 +243,20 @@
 
                 document.getElementById('preview_box').appendChild(label);
             });
+
+            //Show the preview if there is something to show
+            if(document.getElementById('preview_box').innerHTML == '') {
+                div.style.border = '0px solid black';
+                label.style.display = 'none';
+                document.getElementById('cond-break-1').style.display = 'none';
+                document.getElementById('cond-break-2').style.display = 'none';
+            }
+            else{
+                div.style.border = '2px solid black';
+                label.style.display = 'inline';
+                document.getElementById('cond-break-1').style.display = 'inline';
+                document.getElementById('cond-break-2').style.display = 'inline';
+            }
 
         }
 
