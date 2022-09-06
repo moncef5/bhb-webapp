@@ -167,7 +167,13 @@
                 if (e.keyCode == 9) {
                     e.preventDefault();
                     if (e.shiftKey && index > 0) document.getElementById('code_input' + (this.index - 1)).focus();
-                    else if (index < 5) document.getElementById('code_input' + (this.index + 1)).focus();
+                    else if (index < 5) {
+
+                        var nextEl = document.getElementById('code_input' + (this.index + 1));
+
+                        if(nextEl.disabled == false)  nextEl.focus();
+                        else document.getElementById('main_enter_box').focus();
+                    }
                     else if (index == 5) document.getElementById('main_enter_box').focus();
                 }
             });
@@ -314,12 +320,8 @@
         var div = document.createElement('div');
         div.id = 'preview_box';
         div.style.padding = '10px';
-        div.style.marginLeft = 'auto';
-        div.style.marginRight = '0px';
-        div.style.display = 'flex';
         div.style.justifyContent = 'space-around';
-        div.style.resize = 'width';
-        div.style.overflow = 'auto';
+        div.style.width = "30%";
         document.body.appendChild(div);
 
         //Create a secondary div to contain the preview labels
