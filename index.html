@@ -82,23 +82,10 @@
             element.classList.toggle("light-mode-color");
             element.classList.toggle("light-mode-disabled");
 
-            //Update preview backgrounds
-            var previews = Array.prototype.slice.call(document.getElementsByClassName("color_preview"));
-            previews.forEach(function (preview) {
-
-                var currentColor = rgbToHex(preview.style.backgroundColor);
-
-                if (currentColor == darkPreview || currentColor == lightPreview) {
-                    preview.style.backgroundColor = (darkMode ? lightPreview : darkPreview)
-                }
-            });
-
             //Update picker backgrounds
             var pickers = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
             pickers.forEach(function (picker) {
-                var currentVal = picker.value;
-
-                console.log(currentVal);
+                var currentVal = picker.value.toUpperCase();
 
                 if (currentVal == darkPreview || currentVal == lightPreview) {
                     picker.value = (darkMode ? lightPreview : darkPreview)
@@ -108,10 +95,13 @@
             //Update button's backgrounds
             document.getElementById("lightModeButton").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
             document.getElementById("clear_all").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
+            document.getElementById("copy_button").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
 
             if (darkMode) darkMode = false;
             else darkMode = true;
 
+            //Update the cookie
+            updateCookie();
         }
 
         function rgbToHex(col) {
@@ -157,7 +147,7 @@
             rawIn.id = 'code_input' + index;
             rawIn.style = "text-transform: uppercase; width: 50px; height: 22px; border: 2px solid black; margin-right: 10px; border-radius: 4px;";
             rawIn.style.paddingRight = '10px';
-            rawIn.onchange = rawIn.onkeyup = function () {
+            rawIn.onchange = rawIn.onkeyup = rawIn.onchange = function () {
                 colorPicker.value = (isHexOk(this.value) ? '#' + this.value : (darkMode ? darkPreview : lightPreview));
                 checkInput();
                 unlockFields();
@@ -260,6 +250,67 @@
             });
         }
 
+        function updateCookie(){
+            
+            //Clear current cookie
+            deleteAllCookies();
+
+            //Start compiling the cookie
+            var cookie = '';
+
+            //Add code fields to the cookie
+            var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
+            fields.forEach(function (f, i) {
+                if(f.value != '' && isHexOk(f.value)) cookie += f.value + ',';
+            });
+            cookie = cookie.slice(0, -1);
+
+            //Add the entered input to the cookie
+            if(n = document.getElementById('main_enter_box').value) cookie += '|' + n;
+            
+            //Add dark mode to cookie
+            cookie += '|' + darkMode;
+
+            //Don't care if the cookie is empty
+            if(cookie == '') return;
+
+            document.cookie = cookie + '; samesite=none; secure; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
+            console.log("cookie: " + document.cookie)
+        }
+
+        function deleteAllCookies() {
+            var cookies = document.cookie.split(";");
+
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i];
+                var eqPos = cookie.indexOf("=");
+                var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            }
+        }
+
+        function handleCookie(){
+            var cookie = document.cookie;
+            if(cookie == '') return;
+
+            var codes = cookie.split('|')[0].split(',');
+            var input = cookie.split('|')[1];
+            var dark = cookie.split('|')[2];
+
+            //Handle codes in cookie
+            var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
+            fields.forEach((f,i) => {
+                if(codes[i] && isHexOk(codes[i])) f.value = codes[i];
+                f.dispatchEvent(new Event('change'));
+            });
+
+            //Handle input in cookie
+            if(input) document.getElementById('main_enter_box').value = input;
+
+            //Handle dark mode in cookie
+            if(dark == 'false') lightMode();
+        }
+
         function checkInput() {
             //Need to be at least 2 valid codes
             var validCodes = 0;
@@ -273,6 +324,7 @@
             }
             else buildPreview(bhbOutput = '');
 
+            updateCookie();
             document.getElementById('main_output_box').value = bhbOutput;
         }
 
@@ -282,26 +334,43 @@
         createClearAll();
 
         document.body.appendChild(masterCodeDiv);
-
         unlockFields();
 
     </script>
 
     <br>
-    <label for="main_enter_box" style="padding-right: 10px;">Input:</label>
-    <input type="text" id="main_enter_box">
-    <input type="text" id="main_output_box" style="display: none;">
 
     <script>
-        //Bind the input text box to catch all changes
-        var mainInput = document.getElementById('main_enter_box');
-        mainInput.onchange = mainInput.onkeyup = mainInput.onkeydown = mainInput.oninput = mainInput.oncut = mainInput.onpaste = function () {
+
+        //Create the div to hold the input box
+        var div = document.createElement('div');
+        div.style.border = '3px solid black';
+        div.style.borderRadius = '5px';
+        div.style.padding = '10px';
+        div.style.width = "35%";
+
+        var label = document.createElement('label');
+        label.for = 'main_enter_box';
+        label.innerHTML = 'Input:';
+        label.style.paddingRight = '10px';
+
+        var mainEnterBox = document.createElement('input');
+        mainEnterBox.type = 'text';
+        mainEnterBox.id = 'main_enter_box';
+        mainEnterBox.style = "width: 200px; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px;";
+        mainEnterBox.onchange = mainEnterBox.onkeyup = mainEnterBox.onkeydown = mainEnterBox.oninput = mainEnterBox.oncut = mainEnterBox.onpaste = function () {
             checkInput();
         };
+
+        div.appendChild(label);
+        div.appendChild(mainEnterBox);
+        document.body.appendChild(div);
+
     </script>
 
+    <input type="text" id="main_output_box" style="display: none;">
+
     <br id="cond-break-1" style="display: none;">
-    <br id="cond-break-2" style="display: none;">
 
     <!--
         Dynamic preview building
@@ -319,6 +388,8 @@
         //Create the master div that will hold the preview label container and the copy button
         var div = document.createElement('div');
         div.id = 'preview_box';
+        div.style.border = '3px solid black';
+        div.style.borderRadius = '5px';
         div.style.padding = '10px';
         div.style.justifyContent = 'space-around';
         div.style.width = "30%";
@@ -333,6 +404,8 @@
         copyButton.type = 'button';
         copyButton.id = 'copy_button';
         copyButton.value = 'Copy to Clipboard';
+        copyButton.style = "width: 150px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px;";
+        copyButton.style.backgroundColor = (darkMode ? darkPreview : lightPreview);
         copyButton.style.display = 'none';
         //On click, copy the latest compiled output to the clipboard
         copyButton.onclick = function () {
@@ -380,14 +453,12 @@
                 label.style.display = 'none';
                 copyButton.style.display = 'none';
                 document.getElementById('cond-break-1').style.display = 'none';
-                document.getElementById('cond-break-2').style.display = 'none';
             }
             else {
-                div.style.border = '2px solid black';
+                div.style.border = '3px solid black';
                 label.style.display = 'inline';
                 copyButton.style.display = 'inline';
                 document.getElementById('cond-break-1').style.display = 'inline';
-                document.getElementById('cond-break-2').style.display = 'inline';
             }
 
             div.appendChild(copyButton);
@@ -490,7 +561,15 @@
     <br>
     <button id="lightModeButton" onclick="lightMode()">Toggle Dark Mode</button>
     <script>
+        document.getElementById('lightModeButton').style = "width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;";
         document.getElementById('lightModeButton').style.backgroundColor = (darkMode ? darkPreview : lightPreview);
+    </script>
+
+    <script>
+        //Handle cookie
+        handleCookie();
+        checkInput();
+        unlockFields();
     </script>
 
 </body>
