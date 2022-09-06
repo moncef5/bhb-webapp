@@ -29,13 +29,13 @@
         background-color: #989ca4;
     }
 
-    .light-mode-input input[type="text"]{
-        background-color: white;
-    }
-
     .light-mode {
         background-color: #f8f4f4;
         color: black;
+    }
+
+    .light-mode-text input[type="text"]{
+        background-color: white;
     }
 
 </style>
@@ -56,6 +56,7 @@
             var element = document.body;
             element.classList.toggle("light-mode");
             element.classList.toggle("light-mode-input");
+            element.classList.toggle("light-mode-button");
 
             if (darkMode) darkMode = false;
             else darkMode = true;
@@ -177,6 +178,8 @@
                 buildPreview(bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(function (x) { return x.value; }), true));
             }
             else buildPreview(bhbOutput = '');
+
+            document.getElementById('main_output_box').value = bhbOutput;
         }
 
         for (var i = 0; i < 6; i++) {
@@ -188,6 +191,7 @@
     <br>
     <label for="main_enter_box" style="padding-right: 10px;">Input:</label>
     <input type="text" id="main_enter_box">
+    <input type="text" id="main_output_box" style="display: none;">
 
     <script>
         //Bind the input text box to catch all changes
@@ -215,13 +219,38 @@
         var div = document.createElement('div');
         div.id = 'preview_box';
         div.style.padding = '10px';
+        div.style.marginLeft = 'auto';
+        div.style.marginRight = '0px';
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-around';
+        div.style.resize = 'width';
+        div.style.overflow = 'auto';
         document.body.appendChild(div);
+
+        var div2 = document.createElement('div');
+        div2.id = 'preview_label_container';
+
+        var copyButton = document.createElement('input');
+        copyButton.type = 'button';
+        copyButton.id = 'copy_button';
+        copyButton.value = 'Copy to Clipboard';
+        copyButton.style.alignSelf = 'right';
+        copyButton.style.display = 'none';
+        copyButton.onclick = function () {
+
+            document.getElementById('main_output_box').style.display = 'inline';
+            document.getElementById('main_output_box').select();
+            document.execCommand('copy');
+            document.getElementById('main_output_box').style.display = 'none';
+        };
+        div.appendChild(copyButton);
+        div.appendChild(div2);
 
         function buildPreview(input) {
 
             //Clear old preview
-            while (div.firstChild) {
-                div.removeChild(div.firstChild);
+            while (div2.firstChild) {
+                div2.removeChild(div2.firstChild);
             }
 
             /*
@@ -242,23 +271,26 @@
                 label.style = "color: " + color + ";";
                 label.innerText = char;
 
-                document.getElementById('preview_box').appendChild(label);
+                div2.appendChild(label);
             });
 
             //Show the preview if there is something to show
-            if(document.getElementById('preview_box').innerHTML == '') {
+            if(div2.innerHTML == '') {
                 div.style.border = '0px solid black';
                 label.style.display = 'none';
+                copyButton.style.display = 'none';
                 document.getElementById('cond-break-1').style.display = 'none';
                 document.getElementById('cond-break-2').style.display = 'none';
             }
             else{
                 div.style.border = '2px solid black';
                 label.style.display = 'inline';
+                copyButton.style.display = 'inline';
                 document.getElementById('cond-break-1').style.display = 'inline';
                 document.getElementById('cond-break-2').style.display = 'inline';
             }
 
+            div.appendChild(copyButton);
         }
 
 
