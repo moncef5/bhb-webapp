@@ -25,12 +25,16 @@
         font-size: 25px;
     }
 
-    input[type="text"]{
+    input[type="text"] {
         background-color: #989ca4;
     }
 
-    input[type="color"]{
+    input[type="color"] {
         background-color: #989ca4;
+    }
+
+    input:disabled {
+        background-color: #787c84;
     }
 
     .light-mode {
@@ -38,14 +42,17 @@
         color: black;
     }
 
-    .light-mode-text input[type="text"]{
+    .light-mode-text input[type="text"] {
         background-color: white;
     }
 
-    .light-mode-color input[type="color"]{
+    .light-mode-color input[type="color"] {
         background-color: white;
     }
 
+    .light-mode-disabled input:disabled {
+        background-color: #d3d3d3;
+    }
 </style>
 
 <body>
@@ -54,6 +61,14 @@
         Dynamic page HTML setup
     -->
     <script>
+
+        var masterCodeDiv = document.createElement("div");
+        masterCodeDiv.id = "masterCodeDiv";
+        masterCodeDiv.style.border = "3px solid black";
+        masterCodeDiv.style.textAlign = "center";
+        masterCodeDiv.style.borderRadius = '10px';
+        masterCodeDiv.style.padding = '10px';
+        masterCodeDiv.style.width = "13%";
 
         //Validate the hex color is good
         function isHexOk(hex) {
@@ -65,6 +80,7 @@
             element.classList.toggle("light-mode");
             element.classList.toggle("light-mode-text");
             element.classList.toggle("light-mode-color");
+            element.classList.toggle("light-mode-disabled");
 
             //Update preview backgrounds
             var previews = Array.prototype.slice.call(document.getElementsByClassName("color_preview"));
@@ -72,10 +88,26 @@
 
                 var currentColor = rgbToHex(preview.style.backgroundColor);
 
-                if(currentColor == darkPreview || currentColor == lightPreview){
-                    preview.style.backgroundColor = (darkMode ? lightPreview : darkPreview) 
+                if (currentColor == darkPreview || currentColor == lightPreview) {
+                    preview.style.backgroundColor = (darkMode ? lightPreview : darkPreview)
                 }
             });
+
+            //Update picker backgrounds
+            var pickers = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
+            pickers.forEach(function (picker) {
+                var currentVal = picker.value;
+
+                console.log(currentVal);
+
+                if (currentVal == darkPreview || currentVal == lightPreview) {
+                    picker.value = (darkMode ? lightPreview : darkPreview)
+                }
+            });
+
+            //Update button's backgrounds
+            document.getElementById("lightModeButton").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
+            document.getElementById("clear_all").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
 
             if (darkMode) darkMode = false;
             else darkMode = true;
@@ -102,12 +134,14 @@
             var label = document.createElement('label');
             label.for = 'code_input' + index;
             label.innerHTML = 'Code ' + (index + 1) + ':';
+            label.style = 'font-size: 20px;';
             //Add padding between label and input
             label.style.paddingRight = '10px';
 
             //Create the color picker
             var colorPicker = document.createElement('input');
             colorPicker.type = 'color';
+            colorPicker.classList.add('color_picker');
             colorPicker.id = 'color_picker' + index;
             colorPicker.value = (darkMode ? darkPreview : lightPreview);
             colorPicker.addEventListener('change', function () {
@@ -119,12 +153,14 @@
             var rawIn = document.createElement('input');
             rawIn.index = index;
             rawIn.type = 'text';
+            rawIn.classList.add('code_input');
             rawIn.id = 'code_input' + index;
             rawIn.style = "text-transform: uppercase; width: 50px; height: 22px; border: 2px solid black; margin-right: 10px; border-radius: 4px;";
             rawIn.style.paddingRight = '10px';
             rawIn.onchange = rawIn.onkeyup = function () {
                 colorPicker.value = (isHexOk(this.value) ? '#' + this.value : (darkMode ? darkPreview : lightPreview));
                 checkInput();
+                unlockFields();
             };
             //Handle tab and shift tab press
             rawIn.addEventListener('keydown', function (e) {
@@ -136,10 +172,12 @@
                 }
             });
 
-            //Only allow valid hex chars as codes
-            rawIn.addEventListener('keypress', function inputKeyPress(event) {
 
-                var key = event.keyCode || event.charCode;
+            //Only allow valid hex chars as codes
+            var enterTypes = ['keydown', 'keyup', 'keypress', 'paste', 'cut'];
+            enterTypes.forEach(function (type) {
+                rawIn.addEventListener(type, function (e) {
+                    var key = event.keyCode || event.charCode;
 
                 if (key == 8 || key == 9 || key == 13 || key == 46 || key == 37 || key == 39) {
                     return true;
@@ -158,6 +196,7 @@
                     event.preventDefault();
                     return false;
                 }
+                });
             });
 
             //Add the label, input, and preview elems to the div
@@ -166,7 +205,53 @@
             div.appendChild(colorPicker);
 
             //Add the div to the body
-            document.body.appendChild(div);
+            masterCodeDiv.appendChild(div);
+        }
+
+
+        function createClearAll() {
+            //Create "Clear All" button
+            var clearAll = document.createElement('button');
+            clearAll.type = 'button';
+            clearAll.id = 'clear_all';
+            clearAll.innerHTML = 'Clear All';
+            clearAll.style = "width: 100px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px;";
+            clearAll.style.backgroundColor = (darkMode ? darkPreview : lightPreview);
+            clearAll.style.alignSelf = 'center';
+            clearAll.onclick = function () {
+                var inputs = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
+                var pickers = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
+                inputs.forEach(function (input) {
+                    input.value = '';
+                });
+                pickers.forEach(function (picker) {
+                    picker.value = (darkMode ? darkPreview : lightPreview);
+                });
+                checkInput();
+                unlockFields();
+            };
+            masterCodeDiv.appendChild(clearAll);
+        }
+
+        //Figure out which fields should be enabled/disabled
+        function unlockFields() {
+
+            var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
+            var pickers = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
+
+            // f=field, i=index
+            fields.forEach(function (f, i) {
+
+                var val = f.value;
+                if (val != '' && val.length == 6 && f.disabled == false && (i + 1 < 6) && isHexOk(val)) {
+                    fields[i + 1].disabled = false;
+                    pickers[i + 1].disabled = false;
+                }
+                else if (i + 1 < 6) {
+                    fields[i + 1].disabled = true;
+                    pickers[i + 1].disabled = true;
+                }
+            });
         }
 
         function checkInput() {
@@ -188,6 +273,11 @@
         for (var i = 0; i < 6; i++) {
             createCodeDiv(i);
         }
+        createClearAll();
+
+        document.body.appendChild(masterCodeDiv);
+
+        unlockFields();
 
     </script>
 
@@ -283,14 +373,14 @@
             });
 
             //Show the preview if there is something to show
-            if(div2.innerHTML == '') {
+            if (div2.innerHTML == '') {
                 div.style.border = '0px solid black';
                 label.style.display = 'none';
                 copyButton.style.display = 'none';
                 document.getElementById('cond-break-1').style.display = 'none';
                 document.getElementById('cond-break-2').style.display = 'none';
             }
-            else{
+            else {
                 div.style.border = '2px solid black';
                 label.style.display = 'inline';
                 copyButton.style.display = 'inline';
@@ -396,7 +486,10 @@
     </script>
 
     <br>
-    <button onclick="lightMode()">Toggle Dark Mode</button>
+    <button id="lightModeButton" onclick="lightMode()">Toggle Dark Mode</button>
+    <script>
+        document.getElementById('lightModeButton').style.backgroundColor = (darkMode ? darkPreview : lightPreview);
+    </script>
 
 </body>
 
