@@ -29,12 +29,20 @@
         background-color: #989ca4;
     }
 
+    input[type="color"]{
+        background-color: #989ca4;
+    }
+
     .light-mode {
         background-color: #f8f4f4;
         color: black;
     }
 
     .light-mode-text input[type="text"]{
+        background-color: white;
+    }
+
+    .light-mode-color input[type="color"]{
         background-color: white;
     }
 
@@ -56,6 +64,7 @@
             var element = document.body;
             element.classList.toggle("light-mode");
             element.classList.toggle("light-mode-text");
+            element.classList.toggle("light-mode-color");
 
             //Update preview backgrounds
             var previews = Array.prototype.slice.call(document.getElementsByClassName("color_preview"));
@@ -96,20 +105,15 @@
             //Add padding between label and input
             label.style.paddingRight = '10px';
 
-            //Create the color preview panes
-            var colorPreview = document.createElement('input');
-            colorPreview.type = 'button';
-            colorPreview.id = 'color_preview' + index;
-            colorPreview.classList.add('color_preview');
-            colorPreview.style = "width: 22px; height: 22px; border: 2px solid black; border-radius: 2px;";
-            //Set the color of the preview pane
-            colorPreview.style.backgroundColor = darkMode ? darkPreview : lightPreview;
-            //"Clear" button
-            colorPreview.onclick = function () {
-                document.getElementById('code_input' + index).value = '';
-                this.style.backgroundColor = darkMode ? darkPreview : lightPreview;
-                checkInput();
-            };
+            //Create the color picker
+            var colorPicker = document.createElement('input');
+            colorPicker.type = 'color';
+            colorPicker.id = 'color_picker' + index;
+            colorPicker.value = (darkMode ? darkPreview : lightPreview);
+            colorPicker.addEventListener('change', function () {
+                document.getElementById('code_input' + index).value = this.value.replace('#', '');
+            });
+            div.appendChild(colorPicker);
 
             //Create code entering box
             var rawIn = document.createElement('input');
@@ -119,7 +123,7 @@
             rawIn.style = "text-transform: uppercase; width: 50px; height: 22px; border: 2px solid black; margin-right: 10px; border-radius: 4px;";
             rawIn.style.paddingRight = '10px';
             rawIn.onchange = rawIn.onkeyup = function () {
-                colorPreview.style.backgroundColor = (isHexOk(this.value) ? "#" + this.value : (darkMode ? darkPreview : lightPreview));
+                colorPicker.value = (isHexOk(this.value) ? '#' + this.value : (darkMode ? darkPreview : lightPreview));
                 checkInput();
             };
             //Handle tab and shift tab press
@@ -159,7 +163,7 @@
             //Add the label, input, and preview elems to the div
             div.appendChild(label);
             div.appendChild(rawIn);
-            div.appendChild(colorPreview);
+            div.appendChild(colorPicker);
 
             //Add the div to the body
             document.body.appendChild(div);
