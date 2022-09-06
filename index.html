@@ -213,7 +213,7 @@
             clearAll.innerHTML = 'Clear All';
             clearAll.style = "width: 100px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px;";
             clearAll.style.backgroundColor = (darkMode ? darkPreview : lightPreview);
-            clearAll.style.alignSelf = 'center';
+            clearAll.style.marginTop = '10px';
             clearAll.onclick = function () {
                 var inputs = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
                 var pickers = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
@@ -275,7 +275,6 @@
             if(cookie == '') return;
 
             document.cookie = cookie + '; samesite=none; secure; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
-            console.log("cookie: " + document.cookie)
         }
 
         function deleteAllCookies() {
@@ -347,7 +346,7 @@
         div.style.border = '3px solid black';
         div.style.borderRadius = '5px';
         div.style.padding = '10px';
-        div.style.width = "35%";
+        div.style.width = "30%";
 
         var label = document.createElement('label');
         label.for = 'main_enter_box';
@@ -357,7 +356,7 @@
         var mainEnterBox = document.createElement('input');
         mainEnterBox.type = 'text';
         mainEnterBox.id = 'main_enter_box';
-        mainEnterBox.style = "width: 200px; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px;";
+        mainEnterBox.style = "width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;";
         mainEnterBox.onchange = mainEnterBox.onkeyup = mainEnterBox.onkeydown = mainEnterBox.oninput = mainEnterBox.oncut = mainEnterBox.onpaste = function () {
             checkInput();
         };
@@ -377,14 +376,6 @@
     -->
     <script>
 
-        //Setup the label for the preview
-        var label = document.createElement('label');
-        label.for = 'preview_box';
-        label.innerHTML = 'Preview:';
-        label.style.paddingRight = '10px';
-        label.style.display = 'none';
-        document.body.appendChild(label);
-
         //Create the master div that will hold the preview label container and the copy button
         var div = document.createElement('div');
         div.id = 'preview_box';
@@ -395,16 +386,26 @@
         div.style.width = "30%";
         document.body.appendChild(div);
 
+        //Setup the label for the preview
+        var label = document.createElement('label');
+        label.for = 'preview_box';
+        label.innerHTML = 'Preview:';
+        label.style.paddingRight = '10px';
+        label.style.display = 'none';
+        div.appendChild(label);
+
         //Create a secondary div to contain the preview labels
         var div2 = document.createElement('div');
         div2.id = 'preview_label_container';
+        div2.style.marginTop = '5px';
+        div2.style.marginBottom = '5px';
 
         //Create the copy button
         var copyButton = document.createElement('input');
         copyButton.type = 'button';
         copyButton.id = 'copy_button';
         copyButton.value = 'Copy to Clipboard';
-        copyButton.style = "width: 150px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px;";
+        copyButton.style = "width: 150px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 5px;";
         copyButton.style.backgroundColor = (darkMode ? darkPreview : lightPreview);
         copyButton.style.display = 'none';
         //On click, copy the latest compiled output to the clipboard
