@@ -561,14 +561,31 @@
 
     </script>
 
+    <br>
+
+    <div id="utilDiv" style="border: 3px solid black; display: flex; border-radius: 5px; padding: 10px; vertical-align: middle; justify-content: space-around; width: 30%">
+        <label for="utilDiv" style="padding-right: 10px;">Utilities:</label>
+        <button 
+            id="light_mode_button"
+            onclick="lightMode()"
+            style="width: 150px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
+                Toggle Dark Mode
+        </button>
+        <button
+            id="slot_machine_button"
+            onclick="this.disabled = true; slotMachine(); setTimeout(function() { document.getElementById('slot_machine_button').disabled = false; }, 2000);"
+            style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
+                Slot Machine
+        </button>
+    </div>
+
     <!--
         Misc. Functions
     -->
     <script>
-        async function slotMachine(){
+        function slotMachine(){
 
             var codeBoxesArr = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
-
             var intProgress = 0;
 
             animate({//Timing loop
@@ -581,7 +598,7 @@
                             for(var j = 5; j >= Math.floor(intProgress / 40); --j) {
                             codeBoxesArr[j].value = randomColor();
                             document.getElementById('color_picker' + codeBoxesArr[j].index).value = "#" + codeBoxesArr[j].value;
-                            unlockFields();
+                            if(intProgress < 10) unlockFields();
                             checkInput();
                         }
                     }
@@ -626,27 +643,7 @@
             });
         }
 
-
-
     </script>
-
-    <br>
-
-    <div id="utilDiv" style="border: 3px solid black; display: flex; border-radius: 5px; padding: 10px; vertical-align: middle; justify-content: space-around; width: 30%">
-        <label for="utilDiv" style="padding-right: 10px;">Utilities:</label>
-        <button 
-            id="lightModeButton"
-            onclick="lightMode()"
-            style="width: 150px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
-                Toggle Dark Mode
-        </button>
-        <button
-            id="slotMachineButton"
-            onclick="slotMachine()"
-            style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
-                Slot Machine
-        </button>
-    </div>
 
     <script>
         //Handle cookie
