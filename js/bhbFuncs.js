@@ -196,12 +196,13 @@ function checkInput() {
     //Count number of valid codes
     codeFields.forEach(el => { if (isHexOk(el.value) && !el.disabled) validCodes++; });
 
-    console.log("codfields.map..:" + codeFields.map(f => {return(!f.disabled ? f.value : '')}).filter(v => v != ''));
     //Build the preview if conditions are met
     if (validCodes >= 2 && (document.getElementById('main_enter_box').value.length >= (validCodes * 2) - 1)) {
         buildPreviewBhb(bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(f => {return(!f.disabled ? f.value : '')}), true));
     }
-    else buildPreviewBhb(bhbOutput = '');
+    else {
+        buildPreviewBhb(bhbOutput = '');
+    }
 
     updateCookie();
     document.getElementById('main_output_box').value = bhbOutput;

@@ -15,12 +15,7 @@
 
 </head>
 
-<!-- Global Intialization and Functions -->
-<script src="js/globalScript.js"></script>
-<script src="js/globalFuncs.js"></script>
-
 <body>
-
     <!-- 
         BHB - This div contains all the elements for the main BHB application
     -->
@@ -55,12 +50,12 @@
                 <input id="color_picker4" type="color" class="color_picker">
             </div>
             <div id="code_box5">
-                <label id="code_input_label5" for="code_input5" class="code_input_label">Code 5:</label>
+                <label id="code_input_label5" for="code_input5" class="code_input_label">Code 6:</label>
                 <input id="code_input5" type="text" index=5 class="code_input">
                 <input id="color_picker5" type="color" class="color_picker">
             </div>
             <button id="clear_all"
-                style="width: 100px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 10px;"
+                style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 10px;"
                 onclick="clearAll()">
                 Clear All
             </button>
@@ -106,11 +101,11 @@
             </button>
     
         </div>
-    
+
         <!-- BHB Specific functions -->
-        <script src="js/bhbFuncs.js"></script>
+        <script type="text/javascript" src="js/bhbFuncs.js"></script>
         <!-- Component registration and event listeners -->
-        <script src="js/bhbScript.js"></script>
+        <script type="text/javascript" src="js/bhbRegisters.js"></script>
 
     </div>
 
@@ -127,6 +122,13 @@
             Toggle Dark Mode
         </button>
     </div>
+
+    <!-- Global Intialization and Functions -->
+    <script src="js/globalFuncs.js"></script>
+    <script src="js/globalScript.js"></script>
+
+    <!-- Last setup for BHB -->
+    <script src="js/bhbScript.js"></script>
 
 </body>
 

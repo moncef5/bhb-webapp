@@ -60,16 +60,14 @@ function toggleLightMode() {
 function updateCookie() {
 
     //Clear current cookie
-    deleteAllCookies();
+    //deleteAllCookies();
 
     //Start compiling the cookie
     var cookie = '';
 
     //Add code fields to the cookie
     var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
-    fields.forEach(function (f, i) {
-        if (f.value != '' && isHexOk(f.value)) cookie += f.value + ',';
-    });
+    fields.forEach(f => cookie += isHexOk(f.value) ? f.value + ',': '');
     cookie = cookie.slice(0, -1);
 
     //Add the entered input to the cookie
@@ -81,7 +79,7 @@ function updateCookie() {
     //Don't care if the cookie is empty
     if (cookie == '') return;
 
-    document.cookie = cookie + '; samesite=none; secure; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
+    document.cookie = cookie + '; samesite=none; secure; max-age=31536000; path=/';
 }
 
 //Clear all existing cookies
@@ -89,14 +87,19 @@ function deleteAllCookies() {
     document.cookie.split(";").forEach(c => {
         let eqPos = c.indexOf("=");
         let name = eqPos > -1 ? c.substr(0, eqPos) : c;
-        document.cookie = name + "=; samesite=none; secure; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        document.cookie = name + "=; samesite=none; secure; max-age=-1; path=/";
     });
 }
 
 //Parse an existing cookie
 function handleCookie() {
+
     var cookie = document.cookie;
-    if (cookie == '') return;
+    console.log("Cookie: " + cookie);
+    if (cookie == '') {
+        checkInput();
+        return;
+    }
 
     var codes = cookie.split('|')[0].split(',');
     var input = cookie.split('|')[1];
@@ -114,6 +117,8 @@ function handleCookie() {
 
     //Handle dark mode in cookie
     if (dark == 'false') toggleLightMode();
+
+    checkInput();
 }
 
 class Setting {
