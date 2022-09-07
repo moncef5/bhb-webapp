@@ -7,38 +7,10 @@
     <link rel="icon" type="image/x-icon" href="resources/favicon.ico">
 </head>
 
-<script>
-    let darkMode = true;
-
-    let darkPreview = "#7A7A7A";
-    let lightPreview = "#FFFFFF";
-
-    let bhbOutput = '';
-
-    class Setting {
-
-        constructor(name, description, initValue, options){
-            this.name = name;
-            this.description = description;
-            this.value = initValue;
-            this.options = options;
-        }
-
-        get value(){
-            return this.value;
-        }
-
-        setValue(value){
-            this.value ??= value;
-        }
-
-        // Do nothing by default, "override" in instances
-        execute(){
-
-        }
-    }
-
-</script>
+<!--
+    Global Intialization and Functions
+-->
+<script src="js/globalFuncs.js"></script>
 
 <style>
     body {
@@ -108,531 +80,116 @@
         padding: 10px;
     }
 
+    .mst_div {
+        border: 6px solid black;
+        border-radius: 10px;
+        padding: 10px;        
+    }
+
 </style>
 
 <body>
 
-    <div id="master_code_div" class="std_div" style="text-align: center; width: 13%;">
+    <div id="bhb_div" class="mst_div" style="text-align: left; width: 40%;">
+        <h2>Blazin's Hex Blender (BHB)</h2>
 
-        <div id="code_box0">
-            <label id="code_input_label0" for="code_input0" class="code_input_label">Code 1:</label>
-            <input id="code_input0" type="text" index=0 class="code_input">
-            <input id="color_picker0" type="color" class="color_picker">
+        <div id="master_code_div" class="std_div" style="text-align: center; width: 35%;">
+
+            <div id="code_box0">
+                <label id="code_input_label0" for="code_input0" class="code_input_label">Code 1:</label>
+                <input id="code_input0" type="text" index=0 class="code_input">
+                <input id="color_picker0" type="color" class="color_picker">
+            </div>
+            <div id="code_box1">
+                <label id="code_input_label1" for="code_input1" class="code_input_label">Code 2:</label>
+                <input id="code_input1" type="text" index=1 class="code_input">
+                <input id="color_picker1" type="color" class="color_picker">
+            </div>
+            <div id="code_box2">
+                <label id="code_input_label2" for="code_input2" class="code_input_label">Code 3:</label>
+                <input id="code_input2" type="text" index=2 class="code_input">
+                <input id="color_picker2" type="color" class="color_picker">
+            </div>
+            <div id="code_box3">
+                <label id="code_input_label3" for="code_input3" class="code_input_label">Code 4:</label>
+                <input id="code_input3" type="text" index=3 class="code_input">
+                <input id="color_picker3" type="color" class="color_picker">
+            </div>
+            <div id="code_box4">
+                <label id="code_input_label4" for="code_input4" class="code_input_label">Code 5:</label>
+                <input id="code_input4" type="text" index=4 class="code_input">
+                <input id="color_picker4" type="color" class="color_picker">
+            </div>
+            <div id="code_box5">
+                <label id="code_input_label5" for="code_input5" class="code_input_label">Code 5:</label>
+                <input id="code_input5" type="text" index=5 class="code_input">
+                <input id="color_picker5" type="color" class="color_picker">
+            </div>
+            <button id="clear_all"
+                style="width: 100px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 10px;"
+                onclick="clearAll()">
+                Clear All
+            </button>
+    
         </div>
-        <div id="code_box1">
-            <label id="code_input_label1" for="code_input1" class="code_input_label">Code 2:</label>
-            <input id="code_input1" type="text" index=1 class="code_input">
-            <input id="color_picker1" type="color" class="color_picker">
+    
+        <br>
+    
+        <div style="border: 3px solid black; border-radius: 5px; padding: 10px; width:60%">
+    
+            <label for="main_enter_box" style="padding-right: 10px;">
+                Input:
+            </label>
+    
+            <input id="main_enter_box" type="text"
+                style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
+                oninput="checkInput()" onkeyup="checkInput()" onkeydown="checkInput()" onpaste="checkInput()"
+                oncut="checkInput()" ondrop="checkInput()" onchange="checkInput()">
+            <input type="text" id="main_output_box" style="display: none;">
+    
         </div>
-        <div id="code_box2">
-            <label id="code_input_label2" for="code_input2" class="code_input_label">Code 3:</label>
-            <input id="code_input2" type="text" index=2 class="code_input">
-            <input id="color_picker2" type="color" class="color_picker">
+    
+        <br class="cond-break" style="display: none;">
+    
+        <div id="preview_box"
+            style="border: 3px solid black; border-radius: 5px; padding: 10px; justify-content: space-around; width: 60%;">
+    
+            <label id="preview_box_label" for="preview_box" style="padding-right: 10px; display: none;">
+                Preview:
+            </label>
+    
+            <div id="preview_label_container" style="margin-top: 5px; margin-bottom: 5px">
+            </div>
+    
+            <button id="copy_button" onclick="copyFunctionBhb()"
+                style="width: 150px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 5px; display: none;">
+                Copy To Clipboard
+            </button>
+    
         </div>
-        <div id="code_box3">
-            <label id="code_input_label3" for="code_input3" class="code_input_label">Code 4:</label>
-            <input id="code_input3" type="text" index=3 class="code_input">
-            <input id="color_picker3" type="color" class="color_picker">
-        </div>
-        <div id="code_box4">
-            <label id="code_input_label4" for="code_input4" class="code_input_label">Code 5:</label>
-            <input id="code_input4" type="text" index=4 class="code_input">
-            <input id="color_picker4" type="color" class="color_picker">
-        </div>
-        <div id="code_box5">
-            <label id="code_input_label5" for="code_input5" class="code_input_label">Code 5:</label>
-            <input id="code_input5" type="text" index=5 class="code_input">
-            <input id="color_picker5" type="color" class="color_picker">
-        </div>
-        <button id="clear_all" style="width: 100px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 10px;" onclick="clearAll()">
-            Clear All
-        </button>
+    
+        <!-- BHB Specific functions -->
+        <script src="js/bhbFuncs.js"></script>
+        <!-- Component registration and event listeners -->
+        <script src="js/bhbScript.js"></script>
 
     </div>
-
-    <!--
-        Registering listeners for the code inputs
-    -->
-    <script>
-        rawInList = Array.from(document.getElementsByClassName("code_input"));
-        colorPickerList = Array.from(document.getElementsByClassName("color_picker"));
-
-        rawInList.forEach((rawIn, index) => {
-            rawIn.onchange = rawIn.onkeyup = rawIn.onchange = function () {
-                colorPickerList[index].value = (isHexOk(this.value) ? '#' + this.value : this.getAttribute('initial-value'));
-                checkInput();
-                unlockFields();
-            };
-            //Handle tab and shift tab press
-            rawIn.addEventListener('keydown', function (e) {
-                if (e.keyCode == 9) {
-                    e.preventDefault();
-                    if (e.shiftKey && index > 0) document.getElementById('code_input' + (index - 1)).focus();
-                    else if (index < 5) {
-
-                        var nextEl = document.getElementById('code_input' + (index + 1));
-
-                        if (nextEl.disabled == false) nextEl.focus();
-                        else document.getElementById('main_enter_box').focus();
-                    }
-                    else if (index == 5) document.getElementById('main_enter_box').focus();
-                }
-            });
-            //Only allow valid hex chars as codes
-            var enterTypes = ['keydown', 'keyup', 'keypress', 'paste', 'cut'];
-            enterTypes.forEach(function (type) {
-                rawIn.addEventListener(type, function (e) {
-                    var key = event.keyCode || event.charCode;
-
-                if (key == 8 || key == 9 || key == 13 || key == 46 || key == 37 || key == 39) {
-                    return true;
-                }
-
-                //Input can only be 6 chars long
-                if (this.value.length >= 6) {
-                    event.preventDefault();
-                    return false;
-                }
-
-                var regex = new RegExp("^[A-Fa-f0-9]+$");
-                var keyChar = String.fromCharCode(key);
-
-                if (!regex.test(keyChar)) {
-                    event.preventDefault();
-                    return false;
-                }
-                });
-            });
-        });
-
-        colorPickerList = Array.from(document.getElementsByClassName("color_picker"));
-        colorPickerList.forEach((colorPicker, index) => {
-            colorPicker.value = (darkMode ? "#000000" : "#FFFFFF");
-            colorPicker.addEventListener('change', function () {
-                document.getElementById('code_input' + index).value = this.value.replace('#', '');
-                unlockFields();
-            });
-        })
-
-
-        function clearAll(){
-            Array.prototype.slice.call(document.getElementsByClassName("code_input")).forEach(i => i.value = '');
-            Array.prototype.slice.call(document.getElementsByClassName("color_picker")).forEach(p => p.value = "#000000");
-            checkInput();
-            unlockFields();
-        }
-
-        //Figure out which fields should be enabled/disabled
-        function unlockFields() {
-
-            var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
-            var pickers = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
-
-            // f=field, i=index
-            fields.forEach(function (f, i) {
-
-                var val = f.value;
-                if (val != '' && val.length == 6 && f.disabled == false && (i + 1 < 6)) {
-                    fields[i + 1].disabled = false;
-                    pickers[i + 1].disabled = false;
-                }
-                else if (i + 1 < 6) {
-                    fields[i + 1].disabled = true;
-                    pickers[i + 1].disabled = true;
-                }
-            });
-        }
-
-        function updateCookie(){
-            
-            //Clear current cookie
-            deleteAllCookies();
-
-            //Start compiling the cookie
-            var cookie = '';
-
-            //Add code fields to the cookie
-            var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
-            fields.forEach(function (f, i) {
-                if(f.value != '' && isHexOk(f.value)) cookie += f.value + ',';
-            });
-            cookie = cookie.slice(0, -1);
-
-            //Add the entered input to the cookie
-            cookie += '|' + document.getElementById('main_enter_box').value;
-            
-            //Add dark mode to cookie
-            cookie += '|' + darkMode;
-
-            //Don't care if the cookie is empty
-            if(cookie == '') return;
-
-            document.cookie = cookie + '; samesite=none; secure; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/';
-        }
-
-        function deleteAllCookies() {
-            var cookies = document.cookie.split(";");
-
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i];
-                var eqPos = cookie.indexOf("=");
-                var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-                document.cookie = name + "=; samesite=none; secure; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-            }
-        }
-
-        function handleCookie(){
-            var cookie = document.cookie;
-            if(cookie == '') return;
-
-            var codes = cookie.split('|')[0].split(',');
-            var input = cookie.split('|')[1];
-            var dark = cookie.split('|')[2];
-
-            //Handle codes in cookie
-            var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
-            fields.forEach((f,i) => {
-                if(codes[i] && isHexOk(codes[i])) f.value = codes[i];
-                f.dispatchEvent(new Event('change'));
-            });
-
-            //Handle input in cookie
-            if(input) document.getElementById('main_enter_box').value = input;
-
-            //Handle dark mode in cookie
-            if(dark == 'false') lightMode();
-        }
-
-        function checkInput() {
-            //Need to be at least 2 valid codes
-            var validCodes = 0;
-            //Compile the code fields
-            var codeFields = function () { var x = []; for (var i = 0; i < 6; i++) { x.push(document.getElementById('code_input' + i)); } return x; }();
-            //Count number of valid codes
-            codeFields.forEach(el => { if (isHexOk(el.value)) validCodes++; })
-            //Build the preview if conditions are met
-            if (validCodes >= 2 && (document.getElementById('main_enter_box').value.length >= (validCodes * 2) - 1)) {
-                buildPreview(bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(function (x) { return x.value; }), true));
-            }
-            else buildPreview(bhbOutput = '');
-
-            updateCookie();
-            document.getElementById('main_output_box').value = bhbOutput;
-        }
-
-        unlockFields();
-
-    </script>
 
     <br>
 
-    <div style="border: 3px solid black; border-radius: 5px; padding: 10px; width:30%">
-
-        <label for="main_enter_box"
-            style="padding-right: 10px;">
-                Input:
-        </label>
-
-        <input id="main_enter_box" type="text" style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
-            oninput="checkInput()" onkeyup="checkInput()" onkeydown="checkInput()" onpaste="checkInput()" oncut="checkInput()" ondrop="checkInput()" onchange="checkInput()">
-        <input type="text" id="main_output_box" style="display: none;">
-
-    </div>
-
-    <br class="cond-break" style="display: none;">
-
-    <div id="preview_box" style="border: 3px solid black; border-radius: 5px; padding: 10px; justify-content: space-around; width: 30%;">
-
-        <label id="preview_box_label" for="preview_box"
-            style="padding-right: 10px; display: none;">
-                Preview:
-        </label>
-
-        <div id="preview_label_container"
-            style="margin-top: 5px; margin-bottom: 5px">
-        </div>
-
-        <button id="copy_button" onclick="copyFunction()"
-            style="width: 150px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 5px; display: none;">
-                Copy To Clipboard
-        </button>
-
-    </div>
-
-    <!--
-        Dynamic preview building
-    -->
-    <script>
-
-        function copyFunction(){
-            document.getElementById('main_output_box').style.display = 'inline';
-            document.getElementById('main_output_box').select();
-            document.execCommand('copy');
-            document.getElementById('main_output_box').style.display = 'none';
-        }
-
-
-        //Add the secondary div and the copy button to the master div
-
-        function buildPreview(input) {
-
-            var div = document.getElementById('preview_box');
-            var div2 = document.getElementById('preview_label_container');
-            var copyButton = document.getElementById('copy_button');
-            var label = document.getElementById('preview_box_label');
-
-            //Clear old preview
-            while (div2.firstChild) {
-                div2.removeChild(div2.firstChild);
-            }
-
-            /*
-                Input will be in the form &#FF00FF{char}, etc., where each character will be preceded by a color code
-                The following code will split the input into an array of corresponding color codes and characters:
-
-                [#FF00FFA, #00FF00B, #0000FFC, etc.]
-            */
-            var inputSplit = input.split("&");
-            //First index will be empty, shift it out
-            inputSplit.shift();
-
-            inputSplit.forEach(element => {
-                var color = element.substring(0, 7);
-                var char = element.substring(7, 8);
-
-                var label = document.createElement('label');
-                label.style = "color: " + color + ";";
-                label.innerText = char;
-
-                div2.appendChild(label);
-            });
-
-            //Show the preview if there is something to show
-            if (div2.innerHTML == '') {
-                div.style.border = '0px solid black';
-                label.style.display = 'none';
-                copyButton.style.display = 'none';
-                Array.from(document.getElementsByClassName('cond-break')).forEach(b => b.style.display = 'none');
-            }
-            else {
-                div.style.border = '3px solid black';
-                label.style.display = 'inline';
-                copyButton.style.display = 'inline';
-                Array.from(document.getElementsByClassName('cond-break')).forEach(b => b.style.display = 'inline');
-            }
-
-            div.appendChild(copyButton);
-        }
-
-    </script>
-
-    <!--
-        Blending functions
-    -->
-    <script>
-        function findSplitLengths(word, numSplits) {
-
-            //List of lengths of each split
-            var solutions = [];
-
-            var roughSolution = parseInt(Math.ceil(parseFloat(word.length) / numSplits), 10);
-            var remaining = word.length;
-
-            var reduced = false;
-
-            for (var i = 0; i < numSplits; ++i) {
-                var x = (roughSolution - 1) * (numSplits - i);
-                if (!reduced && x === remaining) {
-                    roughSolution -= 1;
-                    reduced = true;
-                }
-
-                solutions.push(roughSolution);
-                remaining -= roughSolution;
-            }
-
-            return solutions;
-        }
-
-        function findSplits(rightJustified, splitsLengths, input) {
-
-            var result = [];
-            if (rightJustified) splitsLengths = splitsLengths.reverse();
-
-            var newIndex = 0;
-            for (var i = 0; i < splitsLengths.length; i++) {
-                result[i] = input.substring(newIndex, newIndex + splitsLengths[i]);
-                newIndex += splitsLengths[i];
-            }
-
-            return result;
-        }
-
-        function blendTwo(hexOne, hexTwo, input) {
-
-            //Start to compile the output
-            var output = "";
-
-            //Put the R, G, and B values for each into an array
-            componentsOne = [hexR(hexOne), hexG(hexOne), hexB(hexOne)];
-            componentsDif = [hexR(hexTwo) - hexR(hexOne), hexG(hexTwo) - hexG(hexOne), hexB(hexTwo) - hexB(hexOne)];
-
-            //Loop through each step
-            for (var j = 0; j <= (input.length - 1); ++j) {
-                output += "&#";
-                for (var i = 0; i < 3; i++) {
-                    output += pad(componentsOne[i] + (componentsDif[i] * (j / (input.length - 1)))).toLocaleUpperCase();
-                }
-                output += input[j];
-            }
-
-            return output;
-        }
-
-        function blendMain(howManyCodes, input, codeList, rightJustified) {
-
-            //Create an output
-            var output = "";
-            var splitLengths = findSplitLengths(input, (howManyCodes - 1));
-            var splits = findSplits(rightJustified, splitLengths, input);
-
-            for (var i = 0, codeIndex = 0; i < splits.length; i++, codeIndex++) {
-                if (i !== (splits.length - 1)) splits[i] = (splits[i] + splits[i + 1].substring(0, 1));
-
-                var addendum = blendTwo(codeList[codeIndex], codeList[codeIndex + 1], splits[i]);
-                output += (i !== (splits.length - 1) ? addendum.substring(0, addendum.length - 9) : addendum);
-            }
-
-            return output;
-        }
-
-        function pad(input) {
-
-            var hex = Math.round(input).toString(16);
-            return (hex.length === 1 ? "0" + hex : hex);
-        }
-
-        function hexR(hex) { return parseInt(hex.substring(0, 2), 16) }
-        function hexG(hex) { return parseInt(hex.substring(2, 4), 16) }
-        function hexB(hex) { return parseInt(hex.substring(4, 6), 16) }
-
-    </script>
-
-    <br class="cond-break" style="display: none;">
-
-    <div id="utilDiv" style="border: 3px solid black; display: flex; border-radius: 5px; padding: 10px; vertical-align: middle; justify-content: space-around; width: 30%">
+    <div id="utilDiv"
+        style="border: 3px solid black; display: flex; border-radius: 5px; padding: 10px; vertical-align: middle; justify-content: space-around; width: 30%">
         <label for="utilDiv" style="padding-right: 10px;">Utilities:</label>
-        <button 
-            id="light_mode_button"
-            onclick="lightMode()"
+        <button id="light_mode_button" onclick="toggleLightMode()"
             style="width: 150px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
-                Toggle Dark Mode
+            Toggle Dark Mode
         </button>
-        <button
-            id="slot_machine_button"
+        <button id="slot_machine_button"
             onclick="this.disabled = true; slotMachine(); setTimeout(function() { document.getElementById('slot_machine_button').disabled = false; }, 2000);"
             style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
-                Slot Machine
+            Slot Machine
         </button>
     </div>
-
-    <!--
-        Misc. Functions
-    -->
-    <script>
-        function slotMachine(){
-
-            var codeBoxesArr = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
-            var colorPickerArr = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
-            var intProgress = 0;
-
-            animate({//Timing loop
-                duration: 2520,
-                timing: function(timeFraction) {
-                    return timeFraction;
-                },
-                draw: function(progress) {
-                    if(progress % 2!= 0) {
-                        for(var j = 5; j >= Math.floor(intProgress / 40); --j) {
-                            codeBoxesArr[j].value = randomColor();
-                            colorPickerArr[j].value = "#" + codeBoxesArr[j].value;
-                            if(intProgress < 10) unlockFields();
-                            checkInput();
-                        }
-                    }
-                    sleep(4);
-                    intProgress++;
-                }
-            });
-        }
-
-        function randomColor(){
-            var rndHex = '';
-            for(let i = 0; i < 6; i++) rndHex += "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
-            return rndHex;
-        }
-
-        /*
-            Sleep for [delay] number of milliseconds
-        */
-        function sleep(delay){
-            var start = new Date().getTime();
-            while(new Date().getTime() < start + delay);
-        }
-
-        function animate({ timing, draw, duration }) {
-
-            let start = performance.now();
-
-            requestAnimationFrame(function animate(time) {
-                // timeFraction goes from 0 to 1
-                let timeFraction = (time - start) / duration;
-                if (timeFraction > 1) timeFraction = 1;
-
-                // calculate the current animation state
-                let progress = timing(timeFraction)
-
-                draw(progress); // draw it
-
-                if (timeFraction < 1) {
-                    requestAnimationFrame(animate);
-                }
-
-            });
-        }
-
-        //Validate the hex color is good
-        function isHexOk(hex) {
-            return (hex.length == 6);
-        }
-
-        function lightMode() {
-
-            //Update variable
-            if (darkMode) darkMode = false;
-            else darkMode = true;
-
-            //Toggle each of the light mode CSS elements
-            var lightModeCssArr = ['light-mode', 'light-mode-text', 'light-mode-color', 'light-mode-button', 'light-mode-disabled'];
-            lightModeCssArr.forEach(c => document.body.classList.toggle(c));
-
-            //Update the cookie
-            updateCookie();
-        }
-
-        function rgbToHex(col) {
-            if (col.charAt(0) == 'r') {
-                col = col.replace('rgb(', '').replace(')', '').split(',');
-                var r = parseInt(col[0], 10).toString(16);
-                var g = parseInt(col[1], 10).toString(16);
-                var b = parseInt(col[2], 10).toString(16);
-                r = r.length == 1 ? '0' + r : r; g = g.length == 1 ? '0' + g : g; b = b.length == 1 ? '0' + b : b;
-                var colHex = '#' + r + g + b;
-                return colHex.toUpperCase();
-            }
-        }
-
-    </script>
 
     <script>
         //Handle cookie
