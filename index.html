@@ -309,7 +309,7 @@
                 var cookie = cookies[i];
                 var eqPos = cookie.indexOf("=");
                 var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                document.cookie = name + "=; samesite=none; secure; expires=Thu, 01 Jan 1970 00:00:00 GMT";
             }
         }
 
@@ -591,15 +591,29 @@
         Misc. Functions
     -->
     <script>
-        function slotMachine(){
+        async function slotMachine(){
 
             var codeBoxesArr = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
 
-            //Timing loop
-            for(var i = 0; i < 2520; i++){
-                if(i % 2!= 0) for(var j = 5; j >= Math.floor(i / 420); --j) codeBoxesArr[j].value = randomColor();
-                sleep(5);
-            }
+            var intProgress = 0;
+
+            animate({//Timing loop
+                duration: 2520,
+                timing: function(timeFraction) {
+                    return timeFraction;
+                },
+                draw: function(progress) {
+                    if(progress % 2!= 0) {
+                            for(var j = 5; j >= Math.floor(intProgress / 40); --j) {
+                            codeBoxesArr[j].value = randomColor();
+                            document.getElementById('color_picker' + codeBoxesArr[j].index).value = "#" + codeBoxesArr[j].value;
+                            checkInput();
+                        }
+                    }
+                    sleep(4);
+                    intProgress++;
+                }
+            });
         }
 
         function randomColor(){
@@ -616,16 +630,55 @@
             while(new Date().getTime() < start + delay);
         }
 
+        function animate({ timing, draw, duration }) {
+
+            let start = performance.now();
+
+            requestAnimationFrame(function animate(time) {
+                // timeFraction goes from 0 to 1
+                let timeFraction = (time - start) / duration;
+                if (timeFraction > 1) timeFraction = 1;
+
+                // calculate the current animation state
+                let progress = timing(timeFraction)
+
+                draw(progress); // draw it
+
+                if (timeFraction < 1) {
+                    requestAnimationFrame(animate);
+                }
+
+            });
+        }
+
+
+
     </script>
 
     <br>
-    <button id="lightModeButton" onclick="lightMode()">Toggle Dark Mode</button>
-    <!-- <button id="slotMachineButton" onclick="slotMachine()">Slot Machine</button> -->
-    <script>
-        document.getElementById('lightModeButton').style = "width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;";
-        document.getElementById('lightModeButton').style.backgroundColor = (darkMode ? darkPreview : lightPreview);
 
-        document.getElementById('slotMachineButton').style = "width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;";
+    <div id="utilDiv" style="border: 3px solid black; display: flex; border-radius: 5px; padding: 10px; vertical-align: middle; justify-content: space-around; width: 30%">
+        <label for="utilDiv" style="padding-right: 10px;">Utilities:</label>
+        <button 
+            id="lightModeButton" 
+            onclick="lightMode()"
+            style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
+                Toggle Dark Mode
+        </button>
+        <button 
+            id="slotMachineButton" 
+            onclick="slotMachine()"
+            style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
+                Slot Machine
+        </button>
+    </div>
+
+    
+    <!--
+        Utility Creation
+    -->
+    <script>
+        document.getElementById('lightModeButton').style.backgroundColor = (darkMode ? darkPreview : lightPreview); 
         document.getElementById('slotMachineButton').style.backgroundColor = (darkMode ? darkPreview : lightPreview);
     </script>
 
