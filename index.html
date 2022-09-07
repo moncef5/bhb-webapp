@@ -56,6 +56,11 @@
         background-color: #989ca4;
     }
 
+    button {
+        background-color: #7A7A7A;
+        pointer-events: all;
+    }
+
     input:disabled {
         background-color: #787c84;
     }
@@ -73,9 +78,15 @@
         background-color: white;
     }
 
+    .light-mode-button button {
+        background-color: #FFFFFF;
+        pointer-events: all;
+    }
+
     .light-mode-disabled input:disabled {
         background-color: #d3d3d3;
     }
+
 </style>
 
 <body>
@@ -103,6 +114,7 @@
             element.classList.toggle("light-mode");
             element.classList.toggle("light-mode-text");
             element.classList.toggle("light-mode-color");
+            element.classList.toggle("light-mode-button");
             element.classList.toggle("light-mode-disabled");
 
             //Update picker backgrounds
@@ -114,12 +126,6 @@
                     picker.value = (darkMode ? lightPreview : darkPreview)
                 }
             });
-
-            //Update button's backgrounds
-            document.getElementById("lightModeButton").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
-            document.getElementById("clear_all").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
-            document.getElementById("copy_button").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
-            document.getElementById("slotMachineButton").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
 
             if (darkMode) darkMode = false;
             else darkMode = true;
@@ -233,12 +239,9 @@
         function createClearAll() {
             //Create "Clear All" button
             var clearAll = document.createElement('button');
-            clearAll.type = 'button';
             clearAll.id = 'clear_all';
             clearAll.innerHTML = 'Clear All';
-            clearAll.style = "width: 100px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px;";
-            clearAll.style.backgroundColor = (darkMode ? darkPreview : lightPreview);
-            clearAll.style.marginTop = '10px';
+            clearAll.style = "width: 100px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 10px;";
             clearAll.onclick = function () {
                 var inputs = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
                 var pickers = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
@@ -364,91 +367,62 @@
 
     <br>
 
-    <!--
-        Static HTML creation and setup
-    -->
-    <script>
+    <div style="border: 3px solid black; border-radius: 5px; padding: 10px; width:30%">
 
-        //Create the div to hold the input box
-        var div = document.createElement('div');
-        div.style.border = '3px solid black';
-        div.style.borderRadius = '5px';
-        div.style.padding = '10px';
-        div.style.width = "30%";
+        <label for="main_enter_box"
+            style="padding-right: 10px;">
+                Input:
+        </label>
 
-        var label = document.createElement('label');
-        label.for = 'main_enter_box';
-        label.innerHTML = 'Input:';
-        label.style.paddingRight = '10px';
+        <input id="main_enter_box" type="text" style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
+            oninput="checkInput()" onkeyup="checkInput()" onkeydown="checkInput()" onpaste="checkInput()" oncut="checkInput()" ondrop="checkInput()" onchange="checkInput()">
+        <input type="text" id="main_output_box" style="display: none;">
 
-        var mainEnterBox = document.createElement('input');
-        mainEnterBox.type = 'text';
-        mainEnterBox.id = 'main_enter_box';
-        mainEnterBox.style = "width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;";
-        mainEnterBox.onchange = mainEnterBox.onkeyup = mainEnterBox.onkeydown = mainEnterBox.oninput = mainEnterBox.oncut = mainEnterBox.onpaste = function () {
-            checkInput();
-        };
-
-        div.appendChild(label);
-        div.appendChild(mainEnterBox);
-        document.body.appendChild(div);
-
-    </script>
-
-    <input type="text" id="main_output_box" style="display: none;">
+    </div>
 
     <br id="cond-break-1" style="display: none;">
+
+    <div id="preview_box" style="border: 3px solid black; border-radius: 5px; padding: 10px; justify-content: space-around; width: 30%;">
+
+        <label id="preview_box_label" for="preview_box"
+            style="padding-right: 10px; display: none;">
+                Preview:
+        </label>
+
+        <div id="preview_label_container"
+            style="margin-top: 5px; margin-bottom: 5px">
+        </div>
+
+        <button id="copy_button" onclick="copyFunction()"
+            style="width: 150px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 5px; display: none;">
+                Copy To Clipboard
+        </button>
+
+    </div>
 
     <!--
         Dynamic preview building
     -->
     <script>
 
-        //Create the master div that will hold the preview label container and the copy button
-        var div = document.createElement('div');
-        div.id = 'preview_box';
-        div.style.border = '3px solid black';
-        div.style.borderRadius = '5px';
-        div.style.padding = '10px';
-        div.style.justifyContent = 'space-around';
-        div.style.width = "30%";
-        document.body.appendChild(div);
-
-        //Setup the label for the preview
-        var label = document.createElement('label');
-        label.for = 'preview_box';
-        label.innerHTML = 'Preview:';
-        label.style.paddingRight = '10px';
-        label.style.display = 'none';
-        div.appendChild(label);
-
-        //Create a secondary div to contain the preview labels
-        var div2 = document.createElement('div');
-        div2.id = 'preview_label_container';
-        div2.style.marginTop = '5px';
-        div2.style.marginBottom = '5px';
-
-        //Create the copy button
-        var copyButton = document.createElement('input');
-        copyButton.type = 'button';
-        copyButton.id = 'copy_button';
-        copyButton.value = 'Copy to Clipboard';
-        copyButton.style = "width: 150px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 5px;";
-        copyButton.style.backgroundColor = (darkMode ? darkPreview : lightPreview);
-        copyButton.style.display = 'none';
-        //On click, copy the latest compiled output to the clipboard
-        copyButton.onclick = function () {
+        function copyFunction(){
             document.getElementById('main_output_box').style.display = 'inline';
             document.getElementById('main_output_box').select();
             document.execCommand('copy');
             document.getElementById('main_output_box').style.display = 'none';
-        };
+        }
+
+        /*document.getElementById('copy_button').style.backgroundColor = (darkMode ? darkPreview : lightPreview);*/
+
 
         //Add the secondary div and the copy button to the master div
-        div.appendChild(copyButton);
-        div.appendChild(div2);
 
         function buildPreview(input) {
+
+            var div = document.getElementById('preview_box');
+            var div2 = document.getElementById('preview_label_container');
+            var copyButton = document.getElementById('copy_button');
+            var label = document.getElementById('preview_box_label');
 
             //Clear old preview
             while (div2.firstChild) {
@@ -607,6 +581,7 @@
                             for(var j = 5; j >= Math.floor(intProgress / 40); --j) {
                             codeBoxesArr[j].value = randomColor();
                             document.getElementById('color_picker' + codeBoxesArr[j].index).value = "#" + codeBoxesArr[j].value;
+                            unlockFields();
                             checkInput();
                         }
                     }
@@ -660,27 +635,18 @@
     <div id="utilDiv" style="border: 3px solid black; display: flex; border-radius: 5px; padding: 10px; vertical-align: middle; justify-content: space-around; width: 30%">
         <label for="utilDiv" style="padding-right: 10px;">Utilities:</label>
         <button 
-            id="lightModeButton" 
+            id="lightModeButton"
             onclick="lightMode()"
-            style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
+            style="width: 150px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
                 Toggle Dark Mode
         </button>
-        <button 
-            id="slotMachineButton" 
+        <button
+            id="slotMachineButton"
             onclick="slotMachine()"
             style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
                 Slot Machine
         </button>
     </div>
-
-    
-    <!--
-        Utility Creation
-    -->
-    <script>
-        document.getElementById('lightModeButton').style.backgroundColor = (darkMode ? darkPreview : lightPreview); 
-        document.getElementById('slotMachineButton').style.backgroundColor = (darkMode ? darkPreview : lightPreview);
-    </script>
 
     <script>
         //Handle cookie
