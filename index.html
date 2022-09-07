@@ -232,7 +232,7 @@
             fields.forEach(function (f, i) {
 
                 var val = f.value;
-                if (val != '' && val.length == 6 && f.disabled == false && (i + 1 < 6) && isHexOk(val)) {
+                if (val != '' && val.length == 6 && f.disabled == false && (i + 1 < 6)) {
                     fields[i + 1].disabled = false;
                     pickers[i + 1].disabled = false;
                 }
