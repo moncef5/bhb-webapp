@@ -168,9 +168,6 @@ function buildPreviewBhb(input) {
         copyButton.style.display = 'inline';
         Array.from(document.getElementsByClassName('cond-break')).forEach(b => b.style.display = 'inline');
     }
-
-    div.appendChild(copyButton);
-    div.appendChild(div2);
 }
 
 //Figure out which fields should be enabled/disabled
