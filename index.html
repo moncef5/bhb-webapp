@@ -15,6 +15,29 @@
 
     let bhbOutput = '';
 
+    class Setting {
+
+        constructor(name, description, initValue, options){
+            this.name = name;
+            this.description = description;
+            this.value = initValue;
+            this.options = options;
+        }
+
+        get value(){
+            return this.value;
+        }
+
+        setValue(value){
+            this.value ??= value;
+        }
+
+        // Do nothing by default, "override" in instances
+        execute(){
+
+        }
+    }
+
 </script>
 
 <style>
@@ -96,6 +119,7 @@
             document.getElementById("lightModeButton").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
             document.getElementById("clear_all").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
             document.getElementById("copy_button").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
+            document.getElementById("slotMachineButton").style.backgroundColor = (darkMode ? lightPreview : darkPreview);
 
             if (darkMode) darkMode = false;
             else darkMode = true;
@@ -136,6 +160,7 @@
             colorPicker.value = (darkMode ? darkPreview : lightPreview);
             colorPicker.addEventListener('change', function () {
                 document.getElementById('code_input' + index).value = this.value.replace('#', '');
+                unlockFields();
             });
             div.appendChild(colorPicker);
 
@@ -266,7 +291,7 @@
             cookie = cookie.slice(0, -1);
 
             //Add the entered input to the cookie
-            if(n = document.getElementById('main_enter_box').value) cookie += '|' + n;
+            cookie += '|' + document.getElementById('main_enter_box').value;
             
             //Add dark mode to cookie
             cookie += '|' + darkMode;
@@ -339,6 +364,9 @@
 
     <br>
 
+    <!--
+        Static HTML creation and setup
+    -->
     <script>
 
         //Create the div to hold the input box
@@ -559,11 +587,46 @@
 
     </script>
 
+    <!--
+        Misc. Functions
+    -->
+    <script>
+        function slotMachine(){
+
+            var codeBoxesArr = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
+
+            //Timing loop
+            for(var i = 0; i < 2520; i++){
+                if(i % 2!= 0) for(var j = 5; j >= Math.floor(i / 420); --j) codeBoxesArr[j].value = randomColor();
+                sleep(5);
+            }
+        }
+
+        function randomColor(){
+            var rndHex = '';
+            for(let i = 0; i < 6; i++) rndHex += "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
+            return rndHex;
+        }
+
+        /*
+            Sleep for [delay] number of milliseconds
+        */
+        function sleep(delay){
+            var start = new Date().getTime();
+            while(new Date().getTime() < start + delay);
+        }
+
+    </script>
+
     <br>
     <button id="lightModeButton" onclick="lightMode()">Toggle Dark Mode</button>
+    <!-- <button id="slotMachineButton" onclick="slotMachine()">Slot Machine</button> -->
     <script>
         document.getElementById('lightModeButton').style = "width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;";
         document.getElementById('lightModeButton').style.backgroundColor = (darkMode ? darkPreview : lightPreview);
+
+        document.getElementById('slotMachineButton').style = "width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;";
+        document.getElementById('slotMachineButton').style.backgroundColor = (darkMode ? darkPreview : lightPreview);
     </script>
 
     <script>
