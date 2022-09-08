@@ -50,7 +50,7 @@ function toggleLightMode() {
     darkMode = !darkMode;
 
     //Toggle each of the light mode CSS elements
-    ['light-mode', 'light-mode-text', 'light-mode-color', 'light-mode-button', 'light-mode-disabled'].forEach(c => document.body.classList.toggle(c));
+    ['light-mode', 'light-mode-text', 'light-mode-color', 'light-mode-button', 'light-mode-disabled', 'light-mode-mst_div-float', 'light-mode-mst_div-topnav', 'light-mode-slv_div'].forEach(c => document.body.classList.toggle(c));
 
     //Update the cookie
     updateCookie();

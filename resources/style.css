@@ -44,6 +44,7 @@ input:disabled {
     background-color: #d3d3d3;
 }
 
+
 .code_input {
     text-transform: uppercase;
     width: 50px;
@@ -54,19 +55,38 @@ input:disabled {
     padding-right: 10px
 }
 
+.light-mode-mst_div-topnav div[class="mst_div topnav"] {
+    background-color: #FFFFFF;
+}
+
+.light-mode-mst_div-float div[class="mst_div float-child"] {
+    background-color: #FFFFFF;
+}
+
+.light-mode-slv_div div[class="slv_div"] {
+    background-color: #FFFFFF;
+}
+
 .code_input_label {
     font-size: 20px;
     padding-right: 10px;
 }
 
-.std_div {
+.mst_div {
+    background-color: #858a93;
+    border: 6px solid black;
+    border-radius: 10px;
+    padding: 10px;        
+}
+
+.slv_div {
+    background-color: #a0a4ab;
     border: 3px solid black;
     border-radius: 10px;
     padding: 10px;
 }
 
-.mst_div {
-    border: 6px solid black;
-    border-radius: 10px;
-    padding: 10px;        
-}
+.float-child {
+    float: left;
+    padding: 20px;
+}  

@@ -8,120 +8,148 @@
     <link rel="icon" type="image/x-icon" href="resources/favicon.ico">
     <!-- Main styling for BHB and CS2-->
     <link rel="stylesheet" type="text/css" href="resources/style.css">
+    <!-- Styling for Topbar -->
+    <link rel="stylesheet" type="text/css" href="resources/topbar.css">
 
     <!-- Chrome Webapp setup -->
     <meta name="theme-color" content="#7a7a7a">
     <link rel="manifest" href="resources/manifest.json">
 
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 </head>
 
 <body>
-    <!-- 
-        BHB - This div contains all the elements for the main BHB application
-    -->
-    <div id="bhb_div" class="mst_div" style="text-align: left; width: 40%;">
-        <h2>Blazin's Hex Blender (BHB)</h2>
 
-        <div id="master_code_div" class="std_div" style="text-align: center; width: 35%;">
-
-            <div id="code_box0">
-                <label id="code_input_label0" for="code_input0" class="code_input_label">Code 1:</label>
-                <input id="code_input0" type="text" index=0 class="code_input">
-                <input id="color_picker0" type="color" class="color_picker">
-            </div>
-            <div id="code_box1">
-                <label id="code_input_label1" for="code_input1" class="code_input_label">Code 2:</label>
-                <input id="code_input1" type="text" index=1 class="code_input">
-                <input id="color_picker1" type="color" class="color_picker">
-            </div>
-            <div id="code_box2">
-                <label id="code_input_label2" for="code_input2" class="code_input_label">Code 3:</label>
-                <input id="code_input2" type="text" index=2 class="code_input">
-                <input id="color_picker2" type="color" class="color_picker">
-            </div>
-            <div id="code_box3">
-                <label id="code_input_label3" for="code_input3" class="code_input_label">Code 4:</label>
-                <input id="code_input3" type="text" index=3 class="code_input">
-                <input id="color_picker3" type="color" class="color_picker">
-            </div>
-            <div id="code_box4">
-                <label id="code_input_label4" for="code_input4" class="code_input_label">Code 5:</label>
-                <input id="code_input4" type="text" index=4 class="code_input">
-                <input id="color_picker4" type="color" class="color_picker">
-            </div>
-            <div id="code_box5">
-                <label id="code_input_label5" for="code_input5" class="code_input_label">Code 6:</label>
-                <input id="code_input5" type="text" index=5 class="code_input">
-                <input id="color_picker5" type="color" class="color_picker">
-            </div>
-            <button id="clear_all"
-                style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 10px;"
-                onclick="clearAll()">
-                Clear All
-            </button>
-            <button id="slot_machine_button"
-                onclick="this.disabled = true; slotMachine(); setTimeout(function() { document.getElementById('slot_machine_button').disabled = false; }, 2000);"
-                style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
-                    Slot Machine
-            </button>
-    
-        </div>
-    
-        <br>
-    
-        <div style="border: 3px solid black; border-radius: 5px; padding: 10px; width:60%">
-    
-            <label for="main_enter_box" style="padding-right: 10px;">
-                Input:
-            </label>
-    
-            <input id="main_enter_box" type="text"
-                style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
-                oninput="checkInput()" onkeyup="checkInput()" onkeydown="checkInput()" onpaste="checkInput()"
-                oncut="checkInput()" ondrop="checkInput()" onchange="checkInput()">
-            <input type="text" id="main_output_box" style="display: none;">
-    
-        </div>
-    
-        <br class="cond-break" style="display: none;">
-    
-        <div id="preview_box"
-            style="border: 3px solid black; border-radius: 5px; padding: 10px; justify-content: space-around; width: 60%;">
-    
-            <label id="preview_box_label" for="preview_box" style="padding-right: 10px; display: none;">
-                Preview:
-            </label>
-    
-            <div id="preview_label_container" style="margin-top: 5px; margin-bottom: 5px">
-            </div>
-    
-            <button id="copy_button" onclick="copyFunctionBhb()"
-                style="width: 150px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 5px; display: none;">
-                Copy To Clipboard
-            </button>
-    
-        </div>
-
-        <!-- BHB Specific functions -->
-        <script type="text/javascript" src="js/bhbFuncs.js"></script>
-        <!-- Component registration and event listeners -->
-        <script type="text/javascript" src="js/bhbRegisters.js"></script>
-
-    </div>
-
-    <br>
-
-    <!--
-        Utilities - This div contains all the elements for the utilities section
-    -->
-    <div id="utilDiv" class="mst_div"
-        style="display: flex; vertical-align: middle; justify-content: space-around; width: 30%">
+    <!-- Utilities - This div contains all the elements for the utilities section -->
+    <div id="utilDiv" class="mst_div topnav" style="width:85%">
         <label for="utilDiv" style="padding-right: 10px;">Utilities:</label>
         <button id="light_mode_button" onclick="toggleLightMode()"
             style="width: 150px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
             Toggle Dark Mode
         </button>
     </div>
+
+    <div id="master_div" class="float-container" style="height: 60%;">
+
+        <!-- BHB - This div contains all the elements for the main BHB application -->
+        <div id="bhb_div" class="mst_div float-child" style="text-align: left; width: 40%; margin-top:10px;">
+            <h2>Blazin's Hex Blender (BHB)</h2>
+
+            <div id="master_code_div" class="slv_div" style="text-align: center; width: 35%;">
+
+                <div id="code_box0">
+                    <label id="code_input_label0" for="code_input0" class="code_input_label">Code 1:</label>
+                    <input id="code_input0" type="text" index=0 class="code_input">
+                    <input id="color_picker0" type="color" class="color_picker">
+                </div>
+                <div id="code_box1">
+                    <label id="code_input_label1" for="code_input1" class="code_input_label">Code 2:</label>
+                    <input id="code_input1" type="text" index=1 class="code_input">
+                    <input id="color_picker1" type="color" class="color_picker">
+                </div>
+                <div id="code_box2">
+                    <label id="code_input_label2" for="code_input2" class="code_input_label">Code 3:</label>
+                    <input id="code_input2" type="text" index=2 class="code_input">
+                    <input id="color_picker2" type="color" class="color_picker">
+                </div>
+                <div id="code_box3">
+                    <label id="code_input_label3" for="code_input3" class="code_input_label">Code 4:</label>
+                    <input id="code_input3" type="text" index=3 class="code_input">
+                    <input id="color_picker3" type="color" class="color_picker">
+                </div>
+                <div id="code_box4">
+                    <label id="code_input_label4" for="code_input4" class="code_input_label">Code 5:</label>
+                    <input id="code_input4" type="text" index=4 class="code_input">
+                    <input id="color_picker4" type="color" class="color_picker">
+                </div>
+                <div id="code_box5">
+                    <label id="code_input_label5" for="code_input5" class="code_input_label">Code 6:</label>
+                    <input id="code_input5" type="text" index=5 class="code_input">
+                    <input id="color_picker5" type="color" class="color_picker">
+                </div>
+                <button id="clear_all"
+                    style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 10px;"
+                    onclick="clearAll()">
+                    Clear All
+                </button>
+                <button id="slot_machine_button"
+                    onclick="this.disabled = true; slotMachine(); setTimeout(function() { document.getElementById('slot_machine_button').disabled = false; }, 2000);"
+                    style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
+                        Slot Machine
+                </button>
+        
+            </div>
+        
+            <br>
+        
+            <div id="input_div" class="slv_div" style="width:60%">
+        
+                <label for="main_enter_box" style="padding-right: 10px;">
+                    Input:
+                </label>
+        
+                <input id="main_enter_box" type="text"
+                    style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
+                    oninput="checkInput()" onkeyup="checkInput()" onkeydown="checkInput()" onpaste="checkInput()"
+                    oncut="checkInput()" ondrop="checkInput()" onchange="checkInput()">
+                <input type="text" id="main_output_box" style="display: none;">
+        
+            </div>
+        
+            <br class="cond-break" style="display: none;">
+        
+            <div id="preview_box" class="slv_div"
+                style="border: 3px solid black; border-radius: 5px; padding: 10px; justify-content: space-around; width: 60%;">
+        
+                <label id="preview_box_label" for="preview_box" style="padding-right: 10px; display: none;">
+                    Preview:
+                </label>
+        
+                <div id="preview_label_container" style="margin-top: 5px; margin-bottom: 5px">
+                </div>
+        
+                <button id="copy_button" onclick="copyFunctionBhb()"
+                    style="width: 150px; height: 30px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 5px; display: none;">
+                    Copy To Clipboard
+                </button>
+        
+            </div>
+
+            <!-- BHB Specific functions -->
+            <script type="text/javascript" src="js/bhbFuncs.js"></script>
+            <!-- Component registration and event listeners -->
+            <script type="text/javascript" src="js/bhbRegisters.js"></script>
+
+        </div>
+        
+        <!-- ColorSchemeV2 - This div contains all the elements for the CS2 port -->
+        <div id="cs2_div" class="mst_div float-child" style="text-align: left; width: 40%; margin-left: 10px; margin-top:10px;">
+            <h2>ColorSchemeV2 (CS2)</h2>
+            <h3 style="color: darkred">⚠ This is in development still, and has no functionality ⚠</h3>
+
+            <div>
+                <label id="cs2_scheme_select_label" for="cs2_scheme_select">Choose a scheme:</label>
+                <select id="cs2_scheme_select">
+                    <option disabled selected value="default"> -- Select a Scheme -- </option>
+                    <optgroup label="Randoms">
+                        <option value="Random">Random</option>
+                        <option value="Random Hex">Random Hex</option>
+                    </optgroup>
+                    <optgroup label="Statics">
+                        <option value="Rainbow">Rainbow</option>
+                        <option value="Ordered">Ordered</option>
+                    </optgroup>
+                </select>
+            </div>
+
+        </div>
+
+    </div>
+
+    <br>
+    <br>
 
     <!-- Global Intialization and Functions -->
     <script src="js/globalFuncs.js"></script>
