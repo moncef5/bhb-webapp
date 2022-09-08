@@ -4,8 +4,9 @@ let darkPreview = "#7A7A7A";
 let lightPreview = "#FFFFFF";
 
 let bhbOutput = '';
+let cs2Output = '';
 
-function randomColor() {
+function randomHexColor() {
     var rndHex = '';
     for (let i = 0; i < 6; i++) rndHex += "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
     return rndHex;
@@ -76,6 +77,12 @@ function updateCookie() {
     //Add dark mode to cookie
     cookie += '|' + darkMode;
 
+    //Add CS2 scheme to cookie
+    cookie += '|' + document.getElementById('cs2_scheme_select').value;
+
+    //Add CS2 input to cookie
+    cookie += '|' + document.getElementById('cs2_enter_box').value;
+
     //Don't care if the cookie is empty
     if (cookie == '') return;
 
@@ -100,9 +107,12 @@ function handleCookie() {
         return;
     }
 
+    //Bhb inputs
     var codes = cookie.split('|')[0].split(',');
     var input = cookie.split('|')[1];
     var dark = cookie.split('|')[2];
+    var cs2scheme = cookie.split('|')[3];
+    var cs2input = cookie.split('|')[4];
 
     //Handle codes in cookie
     var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
@@ -114,31 +124,15 @@ function handleCookie() {
     //Handle input in cookie
     if (input) document.getElementById('main_enter_box').value = input;
 
+    //Handle CS2 input in cookie
+    if (cs2input) document.getElementById('cs2_enter_box').value = cs2input;
+
+    //Handle CS2 scheme in cookie
+    if (cs2scheme) document.getElementById('cs2_scheme_select').value = cs2scheme;
+
     //Handle dark mode in cookie
     if (dark == 'false') toggleLightMode();
 
     checkInput();
-}
-
-class Setting {
-
-    constructor(name, description, initValue, options) {
-        this.name = name;
-        this.description = description;
-        this.value = initValue;
-        this.options = options;
-    }
-
-    get value() {
-        return this.value;
-    }
-
-    setValue(value) {
-        this.value ??= value;
-    }
-
-    // Do nothing by default, "override" in instances
-    execute() {
-        return;
-    }
+    checkInputCS2();
 }

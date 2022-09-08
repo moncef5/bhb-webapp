@@ -9,6 +9,10 @@ input[type="text"] {
     background-color: #989ca4;
 }
 
+select {
+    background-color: #7b7d82;
+}
+
 input[type="color"] {
     background-color: #989ca4;
 }
@@ -28,6 +32,10 @@ input:disabled {
 }
 
 .light-mode-text input[type="text"] {
+    background-color: white;
+}
+
+.light-mode-text select {
     background-color: white;
 }
 

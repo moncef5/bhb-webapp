@@ -22,6 +22,10 @@
 
 <body>
 
+    <!-- CS2 Schemes, need to be declared globally, and first -->
+    <script src="js/cs2Classes.js"></script>
+    <script src="js/cs2Script.js"></script>
+
     <!-- Utilities - This div contains all the elements for the utilities section -->
     <div id="utilDiv" class="mst_div topnav" style="width:85%">
         <label for="utilDiv" style="padding-right: 10px;">Utilities:</label>
@@ -77,44 +81,44 @@
                 <button id="slot_machine_button"
                     onclick="this.disabled = true; slotMachine(); setTimeout(function() { document.getElementById('slot_machine_button').disabled = false; }, 2000);"
                     style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
-                        Slot Machine
+                    Slot Machine
                 </button>
-        
+
             </div>
-        
+
             <br>
-        
-            <div id="input_div" class="slv_div" style="width:60%">
-        
+
+            <div id="bhb_input_div" class="slv_div" style="width:60%">
+
                 <label for="main_enter_box" style="padding-right: 10px;">
                     Input:
                 </label>
-        
+
                 <input id="main_enter_box" type="text"
                     style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
                     oninput="checkInput()" onkeyup="checkInput()" onkeydown="checkInput()" onpaste="checkInput()"
                     oncut="checkInput()" ondrop="checkInput()" onchange="checkInput()">
                 <input type="text" id="main_output_box" style="display: none;">
-        
+
             </div>
-        
+
             <br class="cond-break" style="display: none;">
-        
+
             <div id="preview_box" class="slv_div"
                 style="border: 3px solid black; border-radius: 5px; padding: 10px; justify-content: space-around; width: 60%;">
-        
+
                 <label id="preview_box_label" for="preview_box" style="padding-right: 10px; display: none;">
                     Preview:
                 </label>
-        
+
                 <div id="preview_label_container" style="margin-top: 5px; margin-bottom: 5px">
                 </div>
-        
+
                 <button id="copy_button" onclick="copyFunctionBhb()"
                     style="width: 35%; height: 30px; border: 2px solid black; border-radius: 4px; margin-top: 5px; display: none;">
                     Copy To Clipboard
                 </button>
-        
+
             </div>
 
             <!-- BHB Specific functions -->
@@ -123,15 +127,15 @@
             <script type="text/javascript" src="js/bhbRegisters.js"></script>
 
         </div>
-        
-        <!-- ColorSchemeV2 - This div contains all the elements for the CS2 port -->
-        <div id="cs2_div" class="mst_div float-child" style="text-align: left; width: 40%; margin-left: 10px; margin-top:10px;">
-            <h2>ColorSchemeV2 (CS2)</h2>
-            <h3 style="color: darkred">⚠ This is in development still, and has no functionality ⚠</h3>
 
-            <div>
+        <!-- ColorSchemeV2 - This div contains all the elements for the CS2 port -->
+        <div id="cs2_div" class="mst_div float-child"
+            style="text-align: left; width: 40%; margin-left: 10px; margin-top:10px;">
+            <h2>ColorSchemeV2 (CS2)</h2>
+
+            <div id="cs2_scheme_div" class="slv_div" style="width:60%; margin-bottom: 20px;">
                 <label id="cs2_scheme_select_label" for="cs2_scheme_select">Choose a scheme:</label>
-                <select id="cs2_scheme_select">
+                <select id="cs2_scheme_select" style="margin-left: 10px; padding: 1%;" onchange="checkInputCS2()">
                     <option disabled selected value="default"> -- Select a Scheme -- </option>
                     <optgroup label="Randoms">
                         <option value="Random">Random</option>
@@ -143,6 +147,42 @@
                     </optgroup>
                 </select>
             </div>
+
+            <div id="cs2_input_div" class="slv_div" style="width:60%">
+
+                <label for="cs2_enter_box" style="padding-right: 10px;">
+                    Input:
+                </label>
+
+                <input id="cs2_enter_box" type="text"
+                    style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
+                    oninput="checkInputCS2()" onkeyup="checkInputCS2()" onkeydown="checkInputCS2()"
+                    onpaste="checkInputCS2()" oncut="checkInputCS2()" ondrop="checkInputCS2()"
+                    onchange="checkInputCS2()">
+                <input type="text" id="cs2_output_box" style="display: none;">
+
+            </div>
+
+            <br class="cs2-cond-break" style="display: none;">
+
+            <div id="cs2_preview_box" class="slv_div"
+                style="border: 3px solid black; border-radius: 5px; padding: 10px; justify-content: space-around; width: 60%;">
+
+                <label id="cs2_preview_box_label" for="cs2_preview_box" style="padding-right: 10px; display: none;">
+                    Preview:
+                </label>
+
+                <div id="cs2_preview_label_container" style="margin-top: 5px; margin-bottom: 5px"></div>
+
+                <button id="cs2_copy_button" onclick="copyFunctionCS2()"
+                    style="width: 35%; height: 30px; border: 2px solid black; border-radius: 4px; margin-top: 5px; display: none;">
+                    Copy To Clipboard
+                </button>
+
+            </div>
+
+            <!-- CS2 Specific functions -->
+            <script src="js/cs2Funcs.js"></script>
 
         </div>
 

@@ -105,7 +105,7 @@ function slotMachine() {
         draw: function (progress) {
             if (progress % 2 != 0) {
                 for (var j = 5; j >= Math.floor(intProgress / 40); --j) {
-                    codeBoxesArr[j].value = randomColor();
+                    codeBoxesArr[j].value = randomHexColor();
                     colorPickerArr[j].value = "#" + codeBoxesArr[j].value;
                     if (intProgress < 10) unlockFields();
                     checkInput();
