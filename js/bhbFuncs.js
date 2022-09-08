@@ -157,12 +157,14 @@ function buildPreviewBhb(input) {
 
     //Show the preview if there is something to show, else hide the entire div
     if (div2.innerHTML == '') {
+        div.style.display = 'none';
         div.style.border = '0px solid black';
         label.style.display = 'none';
         copyButton.style.display = 'none';
         Array.from(document.getElementsByClassName('cond-break')).forEach(b => b.style.display = 'none');
     }
     else {
+        div.style.display = 'block';
         div.style.border = '3px solid black';
         label.style.display = 'inline';
         copyButton.style.display = 'inline';

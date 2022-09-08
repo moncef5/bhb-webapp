@@ -8,8 +8,8 @@ rawInList.forEach((rawIn, index) => {
     var types = ['keyup', 'change'];
     types.forEach(t => {
         rawIn.addEventListener(t, function(){
-            colorPickerList[index].value = (isHexOk(rawIn.value.toLowerCase()) ? '#' + rawIn.value.toLowerCase() : colorPickerList[index].getAttribute('initial-value'));
             unlockFields();
+            colorPickerList[index].value = (isHexOk(rawIn.value.toLowerCase()) ? '#' + rawIn.value.toLowerCase() : colorPickerList[index].getAttribute('initial-value'));
             checkInput();
         });
     });
