@@ -41,6 +41,8 @@ function buildPreviewCS2(input, scheme) {
             label.style = "color: " + nextColor.hex + ";";
             label.innerText = c;
 
+            if(c == ' ') scheme.index--;
+
             div2.appendChild(label);
 
             compOut += "&" + (nextColor.value.length == 6 ? ("#" + nextColor.value) : nextColor.value) + c;
