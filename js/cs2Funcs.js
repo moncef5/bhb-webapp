@@ -11,7 +11,14 @@ function checkInputCS2() {
     else cs2Output = buildPreviewCS2("", 'default');
 
     updateCookie();
-    document.getElementById('cs2_output_box').value = bhbOutput;
+    document.getElementById('cs2_output_box').value = cs2Output;
+}
+
+function copyFunctionCS2(){
+    document.getElementById('cs2_output_box').style.display = 'inline';
+    document.getElementById('cs2_output_box').select();
+    document.execCommand('copy');
+    document.getElementById('cs2_output_box').style.display = 'none';
 }
 
 function buildPreviewCS2(input, scheme) {
