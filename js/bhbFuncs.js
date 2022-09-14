@@ -223,8 +223,6 @@ function shiftColor(index){
 }
 
 function checkInput() {
-    //Init
-    var bhbOutput = '';
     //Need to be at least 2 valid codes
     var validCodes = 0;
     //Compile the code fields

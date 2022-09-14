@@ -63,11 +63,9 @@ colorPickerList.forEach((colorPicker, index) => {
 //Register the listener for justification boxes
 var justificationList = Array.from(document.getElementsByClassName("just_picker"));
 justificationList.forEach((justPicker,) => {
-
     //Onchange, update the cookie
-    justPicker.addEventListener('change', function () {
+    justPicker.addEventListener('change', function() {
         checkInput();
         updateCookie();
     });
-
 });
