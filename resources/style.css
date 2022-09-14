@@ -10,7 +10,7 @@ input[type="text"] {
 }
 
 select {
-    background-color: #7b7d82;
+    background-color: #8f9196;
 }
 
 input[type="color"] {
@@ -18,40 +18,19 @@ input[type="color"] {
 }
 
 button {
-    background-color: #7A7A7A;
+    background-color: #84868c;
     pointer-events: all;
+}
+
+fieldset {
+    border: 2px solid black;
+    border-radius: 5px;
+    background-color: #9fa1a6;
 }
 
 input:disabled {
     background-color: #787c84;
 }
-
-.light-mode {
-    background-color: #f8f4f4;
-    color: black;
-}
-
-.light-mode-text input[type="text"] {
-    background-color: white;
-}
-
-.light-mode-text select {
-    background-color: white;
-}
-
-.light-mode-color input[type="color"] {
-    background-color: white;
-}
-
-.light-mode-button button {
-    background-color: #FFFFFF;
-    pointer-events: all;
-}
-
-.light-mode-disabled input:disabled {
-    background-color: #d3d3d3;
-}
-
 
 .code_input {
     text-transform: uppercase;
@@ -61,18 +40,6 @@ input:disabled {
     margin-right: 10px;
     border-radius: 4px;
     padding-right: 10px
-}
-
-.light-mode-mst_div-topnav div[class="mst_div topnav"] {
-    background-color: #FFFFFF;
-}
-
-.light-mode-mst_div-float div[class="mst_div float-child"] {
-    background-color: #FFFFFF;
-}
-
-.light-mode-slv_div div[class="slv_div"] {
-    background-color: #FFFFFF;
 }
 
 .code_input_label {
@@ -97,4 +64,4 @@ input:disabled {
 .float-child {
     float: left;
     padding: 20px;
-}  
+}

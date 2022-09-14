@@ -1,0 +1,41 @@
+.light-mode {
+    background-color: #f8f4f4;
+    color: black;
+}
+
+.light-mode fieldset{
+    background-color: white;
+}
+
+.light-mode input[type="text"] {
+    background-color: white;
+}
+
+.light-mode select {
+    background-color: white;
+}
+
+.light-mode input[type="color"] {
+    background-color: white;
+}
+
+.light-mode button {
+    background-color: #FFFFFF;
+    pointer-events: all;
+}
+
+.light-mode input:disabled {
+    background-color: #d3d3d3;
+}
+
+.light-mode div[class="mst_div topnav"] {
+    background-color: #FFFFFF;
+}
+
+.light-mode div[class="mst_div float-child"] {
+    background-color: #FFFFFF;
+}
+
+.light-mode div[class="slv_div"] {
+    background-color: #FFFFFF;
+}

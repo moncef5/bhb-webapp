@@ -65,7 +65,10 @@ function blendTwo(hexOne, hexTwo, input) {
     return output;
 }
 
-function blendMain(howManyCodes, input, codeList, rightJustified) {
+function blendMain(howManyCodes, input, codeList) {
+
+    //Get the "Right justified" setting from the HTML
+    var rightJustified = document.getElementById("right_just").checked;
 
     //Create an output
     var output = "";
@@ -190,7 +193,7 @@ function unlockFields() {
     var shifters = Array.prototype.slice.call(document.getElementsByClassName("color_shifter"));
 
     shifters.forEach((s, i) => {
-        if(fields[i].value.length == 6 && !fields[i].disabled){
+        if(i != 0 && fields[i].value.length == 6 && !fields[i].disabled){
             s.disabled  = false;
         }
         else{
@@ -231,7 +234,7 @@ function checkInput() {
 
     //Build the preview if conditions are met
     if (validCodes >= 2 && (document.getElementById('main_enter_box').value.length >= (validCodes * 2) - 1)) {
-        bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(f => {return(!f.disabled ? f.value : '')}), true);
+        bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(f => {return(!f.disabled ? f.value : '')}));
     }
     buildPreviewBhb(bhbOutput);
 

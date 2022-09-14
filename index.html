@@ -8,6 +8,8 @@
     <link rel="icon" type="image/x-icon" href="resources/favicon.ico">
     <!-- Main styling for BHB and CS2-->
     <link rel="stylesheet" type="text/css" href="resources/style.css">
+    <!-- Light mode styling sheet-->
+    <link rel="stylesheet" type="text/css" href="resources/light.css">
     <!-- Styling for Topbar -->
     <link rel="stylesheet" type="text/css" href="resources/topbar.css">
 
@@ -30,7 +32,7 @@
     <div id="utilDiv" class="mst_div topnav" style="width:85%">
         <label for="utilDiv" style="padding-right: 10px;">Utilities:</label>
         <button id="light_mode_button" onclick="toggleLightMode()"
-            style="width: 150px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
+            style="width: 150px; height: 40px; border-radius: 6px; margin-right: 10px;">
             Toggle Dark Mode
         </button>
     </div>
@@ -47,7 +49,7 @@
                     <label id="code_input_label0" for="code_input0" class="code_input_label">Code 1:</label>
                     <input id="code_input0" type="text" index=0 class="code_input">
                     <input id="color_picker0" type="color" class="color_picker">
-                    <button id="color_shifter0" disabled="true" class="color_shifter"><bold>↑</bold></button>
+                    <button id="color_shifter0" disabled class="color_shifter"><bold>↑</bold></button>
                 </div>
                 <div id="code_box1">
                     <label id="code_input_label1" for="code_input1" class="code_input_label">Code 2:</label>
@@ -79,16 +81,27 @@
                     <input id="color_picker5" type="color" class="color_picker">
                     <button id="color_shifter5" title="Shift Code 6 up" class="color_shifter" onclick="shiftColor(5)"><bold>↑</bold></button>
                 </div>
-                <button id="clear_all"
-                    style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px; margin-top: 10px;"
+                <button id="clear_all" title="Clear all code boxes"
+                    style="width: 100px; border-radius: 6px;  height: 40px; margin-right: 10px; margin-top: 10px;"
                     onclick="clearAll()">
                     Clear All
                 </button>
-                <button id="slot_machine_button"
+                <button id="slot_machine_button" title="Randomize all code boxes in a &quot;fun&quot; animation"
                     onclick="this.disabled = true; slotMachine(); setTimeout(function() { document.getElementById('slot_machine_button').disabled = false; }, 2000);"
-                    style="width: 100px; height: 40px; border: 2px solid black; border-radius: 4px; margin-right: 10px;">
+                    style="width: 100px; border-radius: 6px; height: 40px; margin-right: 10px;">
                     Slot Machine
                 </button>
+
+                <fieldset id="justification_fieldset" style="margin-top:10px">
+                    <legend title="When a string cannot be evenly split, there will need to be longer sections on one side.&#010;This setting changes which sides gets longer strings.">Justification:</legend>
+                    <div>
+                        <input title="Favor longer strings on left" type="radio" id="left_just" class="just_picker" name="justification" value="left" checked>
+                        <label title="Favor longer strings on left" for="left_just">Left</label>
+
+                        <input title="Favor longer strings on right" type="radio" id="right_just" class="just_picker" name="justification" value="right">
+                        <label title="Favor longer strings on right" for="right_just">Right</label>
+                    </div>
+                </fieldset>
 
             </div>
 
@@ -121,7 +134,7 @@
                 </div>
 
                 <button id="copy_button" onclick="copyFunctionBhb()"
-                    style="width: 35%; height: 30px; border: 2px solid black; border-radius: 4px; margin-top: 5px; display: none;">
+                    style="width: 35%; border-radius: 5px; height: 30px; margin-top: 5px; display: none;">
                     Copy To Clipboard
                 </button>
 
@@ -180,7 +193,7 @@
                 <div id="cs2_preview_label_container" style="margin-top: 5px; margin-bottom: 5px"></div>
 
                 <button id="cs2_copy_button" onclick="copyFunctionCS2()"
-                    style="width: 35%; height: 30px; border: 2px solid black; border-radius: 4px; margin-top: 5px; display: none;">
+                    style="width: 35%; border-radius: 5px; height: 30px; margin-top: 5px; display: none;">
                     Copy To Clipboard
                 </button>
 
