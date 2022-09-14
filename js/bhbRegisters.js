@@ -56,5 +56,6 @@ colorPickerList.forEach((colorPicker, index) => {
     colorPicker.addEventListener('change', function () {
         document.getElementById('code_input' + index).value = this.value.replace('#', '');
         unlockFields();
+        checkInput();
     });
 });

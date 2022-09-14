@@ -186,6 +186,37 @@ function unlockFields() {
             pickers[i + 1].disabled = f.value.length == 6 && !f.disabled ? false : true;
         }
     });
+
+    var shifters = Array.prototype.slice.call(document.getElementsByClassName("color_shifter"));
+
+    shifters.forEach((s, i) => {
+        if(fields[i].value.length == 6 && !fields[i].disabled){
+            s.disabled  = false;
+        }
+        else{
+            s.disabled = true;
+        }
+    })
+}
+
+/*
+    Given an index, swap the code with the code at the index - 1
+*/
+function shiftColor(index){
+    var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
+    var pickers = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
+    
+    var currentIndexColor = fields[index].value;
+    var oneUpIndexColor = fields[index - 1].value;
+
+    fields[index].value = oneUpIndexColor;
+    pickers[index].value = "#" + oneUpIndexColor;
+
+    fields[index - 1].value = currentIndexColor;
+    pickers[index - 1].value = "#" + currentIndexColor;
+
+    unlockFields();
+    checkInput();
 }
 
 function checkInput() {
