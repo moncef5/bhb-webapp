@@ -20,7 +20,8 @@ rawInList.forEach((rawIn, index) => {
             e.preventDefault();
             if (e.shiftKey && index > 0) document.getElementById('code_input' + (index - 1)).focus();
             else if (index < 5) {
-                if (!(n = document.getElementById('code_input' + (index + 1))).disabled) n.focus();
+                let n = document.getElementById('code_input' + (index + 1));
+                if (!(n.disabled)) n.focus();
                 else document.getElementById('main_enter_box').focus();
             }
             else if (index == 5) document.getElementById('main_enter_box').focus();

@@ -84,7 +84,8 @@ function blendMain(howManyCodes, input, codeList, rightJustified) {
 }
 
 function padHex(input) {
-    return ((v = Math.round(input).toString(16)).length === 1 ? "0" + v : v);
+    var convertedHex = Math.round(input).toString(16);
+    return convertedHex.length == 1 ? "0" + convertedHex : convertedHex;
 }
 
 function hexR(hex) { return parseInt(hex.substring(0, 2), 16) }
@@ -188,6 +189,8 @@ function unlockFields() {
 }
 
 function checkInput() {
+    //Init
+    var bhbOutput = '';
     //Need to be at least 2 valid codes
     var validCodes = 0;
     //Compile the code fields
@@ -197,11 +200,9 @@ function checkInput() {
 
     //Build the preview if conditions are met
     if (validCodes >= 2 && (document.getElementById('main_enter_box').value.length >= (validCodes * 2) - 1)) {
-        buildPreviewBhb(bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(f => {return(!f.disabled ? f.value : '')}), true));
+        bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(f => {return(!f.disabled ? f.value : '')}), true);
     }
-    else {
-        buildPreviewBhb(bhbOutput = '');
-    }
+    buildPreviewBhb(bhbOutput);
 
     updateCookie();
     document.getElementById('main_output_box').value = bhbOutput;

@@ -7,7 +7,7 @@ function checkInputCS2() {
     var input = document.getElementById('cs2_enter_box').value;
     var scheme = document.getElementById('cs2_scheme_select').value;
 
-    if(input != '' && scheme != 'default') cs2Output = buildPreviewCS2(input, findScheme(scheme));
+    if(input != '' && scheme != 'default') var cs2Output = buildPreviewCS2(input, findScheme(scheme));
     else cs2Output = buildPreviewCS2("", 'default');
 
     updateCookie();

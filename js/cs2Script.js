@@ -1,4 +1,4 @@
-let cs2Schemes = [];
+var cs2Schemes = [];
 
 var mcc = {
     black: new CS2ColorCode("#000000", "0"),
