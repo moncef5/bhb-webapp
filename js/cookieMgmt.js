@@ -1,12 +1,9 @@
 // Create cookie
-function setCookie(cname, cvalue, exdays) {
-    const d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    let expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";samesite=none;secure;" + expires + ";path=/";
+function setCookie(cname, cvalue) {
+    document.cookie = cname + "=" + cvalue + "; samesite=none; secure; max-age=31536000; path=/";
 }
 
-// Delete cookie
+//Delete cookie
 function deleteCookie(cname) {
     const d = new Date();
     d.setTime(d.getTime() + (24*60*60*1000));
@@ -14,7 +11,7 @@ function deleteCookie(cname) {
     document.cookie = cname + "=;samesite=none;secure;" + expires + ";path=/";
 }
 
-// Read cookie
+//Read cookie
 function getCookie(cname) {
     let name = cname + "=";
     let decodedCookie = decodeURIComponent(document.cookie);
@@ -34,14 +31,14 @@ function getCookie(cname) {
 // Set cookie consent
 function acceptCookieConsent(){
     deleteCookie('user_cookie_consent');
-    setCookie('user_cookie_consent', 1, 365);
+    setCookie('user_cookie_consent', 1);
     document.getElementById("cookieNotice").style.display = "none";
 }
 
 function declineCookieConsent(){
     deleteAllCookies();
     deleteCookie('user_cookie_consent');
-    setCookie('user_cookie_consent', 0, 365);
+    setCookie('user_cookie_consent', 0);
     document.getElementById("cookieNotice").style.display = "none";
 }
 

@@ -63,42 +63,36 @@ function updateCookie() {
     //Only set the cookie if the user has accepted cookies
     let cookie_consent = getCookie('user_cookie_consent');
 
-    //Clear current cookie
-    deleteAllCookies();
-
     if (cookie_consent == '0') {
         document.cookie = 'user_cookie_consent=0; samesite=none; secure; path=/';
         return;
     }
 
     //Start compiling the cookie
-    var cookie = '';
+    var inputs = '';
 
     //Add code fields to the cookie
     var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
-    fields.forEach(f => cookie += isHexOk(f.value) ? f.value + ',': '');
-    cookie = cookie.slice(0, -1);
+    fields.forEach(f => inputs += isHexOk(f.value) ? f.value + ',': '');
+    inputs = inputs.slice(0, -1);
 
-    //Add justifications to the cookie
-    if(document.getElementById('left_just').checked) cookie += '|left';
-    else cookie += '|right';
+    //Add color codes to the cookies
+    setCookie('bhb_codes', inputs);
 
-    //Add the entered input to the cookie
-    cookie += '|' + document.getElementById('main_enter_box').value;
+    //Add justification to the cookie
+    setCookie('justification', document.getElementById('left_just').checked ? 'left' : 'right');
 
-    //Add dark mode to cookie
-    cookie += '|' + darkMode;
+    //Add input to the cookie
+    setCookie('bhb_input', document.getElementById('main_enter_box').value);
 
-    //Add CS2 scheme to cookie
-    cookie += '|' + document.getElementById('cs2_scheme_select').value;
+    //Add dark mode to the cookie
+    setCookie('dark_mode', darkMode);
 
-    //Add CS2 input to cookie
-    cookie += '|' + document.getElementById('cs2_enter_box').value;
+    //Add CS2 scheme to the cookie
+    setCookie('cs2_scheme', document.getElementById('cs2_scheme_select').value);
 
-    //Don't care if the cookie is empty
-    if (cookie == '') return;
-
-    document.cookie = cookie + '; samesite=none; secure; max-age=31536000; path=/';
+    //Add CS2 input to the cookie
+    setCookie('cs2_input', document.getElementById('cs2_enter_box').value);
 }
 
 //Clear all existing cookies
@@ -111,7 +105,7 @@ function deleteAllCookies(){
 function eraseCookie(name, domain, path){
     domain = domain || document.domain;
     path = path || "/";
-    document.cookie = name + "=; expires=" + +new Date + "; domain=" + domain + "; path=" + path;
+    document.cookie = name + "=; samesite=none; expires=" + +new Date + "; domain=" + domain + "; path=" + path;
 }
 
 //Parse an existing cookie
@@ -124,13 +118,13 @@ function handleCookie() {
     }
 
     //Bhb inputs
-    var codes = cookie.split('|')[0].split(',');
-    var just = cookie.split('|')[1];
-    var input = cookie.split('|')[2];
-    var dark = cookie.split('|')[3];
-    var cs2scheme = cookie.split('|')[4];
+    var codes = getCookie('bhb_codes').split(',');
+    var just = getCookie('justification');
+    var input = getCookie('bhb_input');
+    var dark = getCookie('dark_mode');
+    var cs2scheme = getCookie('cs2_scheme');
     //cs2input should only get up to the first semi-colon
-    var cs2input = cookie.split('|')[5].split(';')[0];
+    var cs2input = getCookie('cs2_input').split(';')[0];
 
     //Handle codes in cookie
     var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
