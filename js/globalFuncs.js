@@ -102,7 +102,13 @@ function updateCookie() {
 }
 
 //Clear all existing cookies
-function deleteAllCookies(name, domain, path){
+function deleteAllCookies(){
+    var cookies = document.cookie.split(";");
+    for (const cookie of cookies)
+        eraseCookie(cookie.split("=")[0]);
+}
+
+function eraseCookie(name, domain, path){
     domain = domain || document.domain;
     path = path || "/";
     document.cookie = name + "=; expires=" + +new Date + "; domain=" + domain + "; path=" + path;
