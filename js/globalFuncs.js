@@ -102,21 +102,10 @@ function updateCookie() {
 }
 
 //Clear all existing cookies
-function deleteAllCookies() {
-    var cookies = document.cookie.split("; ");
-    for (const element of cookies) {
-        var d = window.location.hostname.split(".");
-        while (d.length > 0) {
-            var cookieBase = encodeURIComponent(element.split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT;path=';
-            var p = location.pathname.split('/');
-            document.cookie = cookieBase + '/';
-            while (p.length > 0) {
-                document.cookie = cookieBase + p.join('/');
-                p.pop();
-            }
-            d.shift();
-        }
-    }
+function deleteAllCookies(name, domain, path){
+    domain = domain || document.domain;
+    path = path || "/";
+    document.cookie = name + "=; expires=" + +new Date + "; domain=" + domain + "; path=" + path;
 }
 
 //Parse an existing cookie
