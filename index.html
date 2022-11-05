@@ -206,9 +206,33 @@
 
     </div>
 
+    <!-- Cookie Consent -->
+    <div id="cookieNotice" class="cookie-overlay p-4 d-none" style="display: none;">
+        <div id="closeIcon" style="display: none;">
+        </div>
+        <div class="title-wrap">
+            <h4><u><strong>Cookie Consent:</strong></u></h4>
+        </div>
+        <div class="content-wrap" style="text-align:center">
+            <div class="msg-wrap">
+                <p>This website uses cookies to store entries. These cookies are not used for tracking, and are not sold or shared with any other sites.</p>
+                <div class="btn-wrap" style="text-align:center">
+                    <button title="Accept cookie storage" style="width: 35%; border-radius: 5px; height: 30px; float:inline-start; margin-right: 40px" 
+                        class="btn-primary" onclick="acceptCookieConsent();">Accept Cookies</button>
+                </div>
+                <div class="btn-wrap" style="text-align:center">
+                    <button title="One cookie will be stored, to denote no further storage." style="width: 35%; border-radius: 5px; height: 30px; float:inline-start"
+                        class="btn-secondary" onclick="declineCookieConsent();">Decline Cookies</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <br>
     <br>
 
+    <!-- Script for managing cookie consent -->
+    <script src="js/cookieMgmt.js"></script>
     <!-- Global Intialization and Functions -->
     <script src="js/globalFuncs.js"></script>
     <script src="js/globalScript.js"></script>

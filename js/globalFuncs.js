@@ -60,8 +60,16 @@ function toggleLightMode() {
 //Cookie functions
 function updateCookie() {
 
+    //Only set the cookie if the user has accepted cookies
+    let cookie_consent = getCookie('user_cookie_consent');
+
     //Clear current cookie
     deleteAllCookies();
+
+    if (cookie_consent == '0') {
+        document.cookie = 'user_cookie_consent=0; samesite=none; secure; path=/';
+        return;
+    }
 
     //Start compiling the cookie
     var cookie = '';
@@ -95,11 +103,20 @@ function updateCookie() {
 
 //Clear all existing cookies
 function deleteAllCookies() {
-    document.cookie.split(";").forEach(c => {
-        let eqPos = c.indexOf("=");
-        let name = eqPos > -1 ? c.substr(0, eqPos) : c;
-        document.cookie = name + "=; samesite=none; secure; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-    });
+    var cookies = document.cookie.split("; ");
+    for (const element of cookies) {
+        var d = window.location.hostname.split(".");
+        while (d.length > 0) {
+            var cookieBase = encodeURIComponent(element.split(";")[0].split("=")[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + d.join('.') + ' ;path=';
+            var p = location.pathname.split('/');
+            document.cookie = cookieBase + '/';
+            while (p.length > 0) {
+                document.cookie = cookieBase + p.join('/');
+                p.pop();
+            };
+            d.shift();
+        }
+    }
 }
 
 //Parse an existing cookie
@@ -117,7 +134,8 @@ function handleCookie() {
     var input = cookie.split('|')[2];
     var dark = cookie.split('|')[3];
     var cs2scheme = cookie.split('|')[4];
-    var cs2input = cookie.split('|')[5];
+    //cs2input should only get up to the first semi-colon
+    var cs2input = cookie.split('|')[5].split(';')[0];
 
     //Handle codes in cookie
     var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));

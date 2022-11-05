@@ -29,9 +29,22 @@ rawInList.forEach((rawIn, index) => {
     });
 
     //Only allow valid hex chars as codes
-    var enterTypes = ['keydown', 'keyup', 'keypress', 'paste', 'cut'];
+    var enterTypes = ['keydown', 'keypress', 'paste', 'cut'];
     enterTypes.forEach(function(type) {
         rawIn.addEventListener(type, function (e) {
+
+            //Allow cut and paste, which trigger this
+            if(e.keyCode == undefined) return true;
+
+            // Allow: backspace, delete, tab
+            if ([46, 8, 9].indexOf(e.keyCode) !== -1 ||
+                // Allow: Ctrl+A,Ctrl+C,Ctrl+V, Command+A
+                ((e.keyCode == 65 || e.keyCode == 86 || e.keyCode == 88 || e.keyCode == 67) && (e.ctrlKey === true || e.metaKey === true)) ||
+                // Allow: home, end, left, right, down, up
+                (e.keyCode >= 35 && e.keyCode <= 40)) {
+                // let it happen, don't do anything
+                return;
+            }
 
             e = e || window.event;
             var key = e.keyCode || e.charCode;
