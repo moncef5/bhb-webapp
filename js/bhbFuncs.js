@@ -129,6 +129,7 @@ function clearAll() {
 }
 
 function buildPreviewBhb(input) {
+    
     var div = document.getElementById('preview_box');
     var div2 = document.getElementById('preview_label_container');
     var copyButton = document.getElementById('copy_button');
@@ -160,7 +161,7 @@ function buildPreviewBhb(input) {
     });
 
     //Show the preview if there is something to show, else hide the entire div
-    if (div2.innerHTML == '') {
+    if (div2.innerHTML == '' || input.length == 0 || input == null || input == undefined) {
         div.style.display = 'none';
         div.style.border = '0px solid black';
         label.style.display = 'none';
@@ -234,6 +235,8 @@ function checkInput() {
     if (validCodes >= 2 && (document.getElementById('main_enter_box').value.length >= (validCodes * 2) - 1)) {
         bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(f => {return(!f.disabled ? f.value : '')}));
     }
+    else bhbOutput = '';
+
     buildPreviewBhb(bhbOutput);
 
     updateCookie();
