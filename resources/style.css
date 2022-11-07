@@ -19,6 +19,7 @@ input[type="color"] {
 
 button {
     background-color: #84868c;
+    box-shadow: 2px 2px #60646c;
     pointer-events: all;
 }
 
@@ -49,6 +50,7 @@ input:disabled {
 
 .mst_div {
     background-color: #858a93;
+    box-shadow: 5px 5px;
     border: 6px solid black;
     border-radius: 10px;
     padding: 10px;        
@@ -56,6 +58,7 @@ input:disabled {
 
 .slv_div {
     background-color: #a0a4ab;
+    box-shadow: 3px 3px;
     border: 3px solid black;
     border-radius: 10px;
     padding: 10px;
