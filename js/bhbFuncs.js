@@ -233,12 +233,12 @@ function checkInput() {
 
     //Build the preview if conditions are met
     if (validCodes >= 2 && (document.getElementById('main_enter_box').value.length >= (validCodes * 2) - 1)) {
-        bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(f => {return(!f.disabled ? f.value : '')}));
+        var bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(f => {return(!f.disabled ? f.value : '')}));
     }
     else bhbOutput = '';
 
     buildPreviewBhb(bhbOutput);
 
-    updateCookie();
+    updateBHBCookies();
     document.getElementById('main_output_box').value = bhbOutput;
 }

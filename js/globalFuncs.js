@@ -54,17 +54,18 @@ function toggleLightMode() {
     document.body.classList.toggle('light-mode');
 
     //Update the cookie
-    updateCookie();
+    updateBHBCookies();
 }
 
 //Cookie functions
-function updateCookie() {
+function updateBHBCookies() {
 
     //Only set the cookie if the user has accepted cookies
     let cookie_consent = getCookie('user_cookie_consent');
 
-    if (cookie_consent == '0') {
-        document.cookie = 'user_cookie_consent=0; samesite=none; secure; path=/';
+    //If the user has not accepted cookies, or has not interacted with the prompt, do not set any cookies
+    if (cookie_consent == '0' || cookie_consent == '' || cookie_consent == undefined) {
+        setCookie('user_cookie_consent', '0');
         return;
     }
 
@@ -109,7 +110,7 @@ function eraseCookie(name, domain, path){
 }
 
 //Parse an existing cookie
-function handleCookie() {
+function handleBHBCookies() {
 
     var cookie = document.cookie;
     if (cookie == '') {
@@ -153,3 +154,49 @@ function handleCookie() {
     checkInput();
     checkInputCS2();
 }
+
+// Create cookie
+function setCookie(cname, cvalue) {
+    document.cookie = cname + "=" + cvalue + "; samesite=none; secure; max-age=31536000; path=/";
+}
+
+//Delete cookie
+function deleteCookie(cname) {
+    const d = new Date();
+    d.setTime(d.getTime() + (24*60*60*1000));
+    let expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=;samesite=none;secure;" + expires + ";path=/";
+}
+
+//Read cookie
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(const element of ca) {
+        let c = element;
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+// Set cookie consent
+function acceptCookieConsent(){
+    deleteCookie('user_cookie_consent');
+    setCookie('user_cookie_consent', 1);
+    document.getElementById("cookieNotice").style.display = "none";
+}
+
+function declineCookieConsent(){
+    deleteAllCookies();
+    deleteCookie('user_cookie_consent');
+    setCookie('user_cookie_consent', 0);
+    document.getElementById("cookieNotice").style.display = "none";
+}
+
+document.getElementById("cookieNotice").style.display = (getCookie("user_cookie_consent") == "" ? "block" : "none");

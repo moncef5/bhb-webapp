@@ -1,1 +1,1 @@
-handleCookie();
+handleBHBCookies();

@@ -10,7 +10,7 @@ function checkInputCS2() {
     if(input != '' && scheme != 'default') var cs2Output = buildPreviewCS2(input, findScheme(scheme));
     else cs2Output = buildPreviewCS2("", 'default');
 
-    updateCookie();
+    updateBHBCookies();
     document.getElementById('cs2_output_box').value = cs2Output;
 }
 
