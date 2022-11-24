@@ -74,10 +74,10 @@ function updateBHBCookies() {
 
     //Add code fields to the cookie
     var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
+    //For each field, if the value exists, or there is a value after it, add the field.
+    // after checking was done to prevent 'disabled' fields from being excluded from the cookie
     fields.forEach((f, i) => inputs += ((isHexOk(f.value) || f.value == '' && i < 5 && fields[i + 1].value != '' ) ? f.value + ',': ''));
     inputs = inputs.slice(0, -1);
-
-    console.log("Inputs: " + inputs);
 
     //Add color codes to the cookies
     setCookie('bhb_codes', inputs);
