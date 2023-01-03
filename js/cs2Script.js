@@ -52,6 +52,12 @@ var orderedSchemeColors = [];
 for (var col in mcc) orderedSchemeColors.push(mcc[col]);
 cs2Schemes.push(new Scheme("Ordered", orderedSchemeColors));
 
+//Generate a lookup table
+var cs2Lookup = {};
+for(var color in mcc) {
+    cs2Lookup[mcc[color].value] = mcc[color].getHex();
+}
+
 function findHexFromChar(colorChar) {
     if(!colorChar) return "";
     let cC = colorChar.toLowerCase();
