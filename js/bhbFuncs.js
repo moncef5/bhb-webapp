@@ -136,9 +136,7 @@ function buildPreviewBhb(input) {
     var label = document.getElementById('preview_box_label');
 
     //Clear old preview
-    while (div2.firstChild) {
-        div2.removeChild(div2.firstChild);
-    }
+    div2.innerHTML = "";
 
     /*
         Input will be in the form &#FF00FF{char}, etc., where each character will be preceded by a color code
@@ -146,9 +144,7 @@ function buildPreviewBhb(input) {
 
         [#FF00FF[char: A], #00FF00[char: B], #0000FF[char: C], etc.]
     */
-    var inputSplit = input.split("&");
-    //First index will be empty, shift it out
-    inputSplit.shift();
+    var inputSplit = input.split("&").slice(1);
 
     //Create a label for each character
     inputSplit.forEach(element => {
@@ -160,28 +156,20 @@ function buildPreviewBhb(input) {
         div2.appendChild(label);
     });
 
-    //Show the preview if there is something to show, else hide the entire div
-    if (div2.innerHTML == '' || input.length == 0 || input == null || input == undefined) {
-        div.style.display = 'none';
-        div.style.border = '0px solid black';
-        label.style.display = 'none';
-        copyButton.style.display = 'none';
-        Array.from(document.getElementsByClassName('cond-break')).forEach(b => b.style.display = 'none');
-    }
-    else {
-        div.style.display = 'block';
-        div.style.border = '3px solid black';
-        label.style.display = 'inline';
-        copyButton.style.display = 'inline';
-        Array.from(document.getElementsByClassName('cond-break')).forEach(b => b.style.display = 'inline');
-    }
+    var hideCondition = (div2.innerHTML == '' || input.length == 0 || input == null || input == undefined);
+
+    div.style.display = (hideCondition ? 'none' : 'block');
+    div.style.border = ((hideCondition ? '0px' : '3px') + 'solid black');
+    label.style.display = (hideCondition ? 'none' : 'inline');
+    copyButton.style.display = (hideCondition ? 'none' : 'inline');
+    Array.from(document.getElementsByClassName('cond-break')).forEach(b => b.style.display = (hideCondition ? 'none' : 'inline'));
 }
 
 //Figure out which fields should be enabled/disabled
 function unlockFields() {
 
-    var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
-    var pickers = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
+    var fields = Array.from(document.getElementsByClassName("code_input"));
+    var pickers = Array.from(document.getElementsByClassName("color_picker"));
 
     // f=field, i=index
     fields.forEach((f, i) =>{
@@ -191,16 +179,9 @@ function unlockFields() {
         }
     });
 
-    var shifters = Array.prototype.slice.call(document.getElementsByClassName("color_shifter"));
-
-    shifters.forEach((s, i) => {
-        if(i != 0 && fields[i].value.length == 6 && !fields[i].disabled){
-            s.disabled  = false;
-        }
-        else{
-            s.disabled = true;
-        }
-    })
+    Array.from(document.getElementsByClassName("color_shifter")).forEach((shifter, i) => {
+        shifter.disabled = i !== 0 && fields[i].value.length === 6 && !fields[i].disabled ? false : true;
+    });
 }
 
 /*

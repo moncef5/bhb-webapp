@@ -233,7 +233,8 @@
 
                 <input id="mp_enter_box" type="text"
                     style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
-                    onpaste="checkInputMP()" oncut="checkInputMP()" onchange="checkInputMP()" onkeyup="checkInputMP()">
+                    oninput="checkInputMP()" onkeyup="checkInputMP()" onkeydown="checkInputMP()" onpaste="checkInputMP()"
+                    oncut="checkInputMP()" ondrop="checkInputMP()" onchange="checkInputMP()">
             </div>
 
             <br class="mp-cond-break" style="display: none;">

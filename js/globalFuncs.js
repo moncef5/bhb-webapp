@@ -7,9 +7,7 @@ let bhbOutput = '';
 let cs2Output = '';
 
 function randomHexColor() {
-    var rndHex = '';
-    for (let i = 0; i < 6; i++) rndHex += "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
-    return rndHex;
+    return Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
 }
 
 /*

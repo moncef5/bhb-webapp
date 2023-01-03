@@ -57,12 +57,3 @@ var cs2Lookup = {};
 for(var color in mcc) {
     cs2Lookup[mcc[color].value] = mcc[color].getHex();
 }
-
-function findHexFromChar(colorChar) {
-    if(!colorChar) return "";
-    let cC = colorChar.toLowerCase();
-    for(let CS2CC in mcc) {
-        if(mcc[CS2CC].value == cC) return mcc[CS2CC].getHex().replace("#", "");
-    }
-    return "";
-}
