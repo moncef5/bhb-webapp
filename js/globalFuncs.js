@@ -43,7 +43,7 @@ function animate({ timing, draw, duration }) {
 
 //Validate the hex color is good
 function isHexOk(hex) {
-    return (hex.length == 6);
+    return (hex.length == 6 && !isNaN(parseInt(hex, 16)));
 }
 
 function toggleLightMode() {
@@ -96,6 +96,9 @@ function updateBHBCookies() {
 
     //Add CS2 input to the cookie
     setCookie('cs2_input', document.getElementById('cs2_enter_box').value);
+
+    //Add MP input to the cookie
+    setCookie('mp_input', document.getElementById('mp_enter_box').value);
 }
 
 //Clear all existing cookies
@@ -128,6 +131,7 @@ function handleBHBCookies() {
     var cs2scheme = getCookie('cs2_scheme');
     //cs2input should only get up to the first semi-colon
     var cs2input = getCookie('cs2_input').split(';')[0];
+    var mpinput = getCookie('mp_input');
 
     //Handle codes in cookie
     var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
@@ -149,6 +153,9 @@ function handleBHBCookies() {
 
     //Handle CS2 scheme in cookie
     if (cs2scheme) document.getElementById('cs2_scheme_select').value = cs2scheme;
+
+    //Handle MP input in cookie
+    if (mpinput) document.getElementById('mp_enter_box').value = mpinput;
 
     //Handle dark mode in cookie
     if (dark == 'false') toggleLightMode();

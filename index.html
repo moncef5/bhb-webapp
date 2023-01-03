@@ -31,8 +31,7 @@
     <!-- Utilities - This div contains all the elements for the utilities section -->
     <div id="utilDiv" class="mst_div topnav" style="width:85%">
         <label for="utilDiv" style="padding-right: 10px;">Utilities:</label>
-        <button id="light_mode_button" onclick="toggleLightMode()"
-            style="width: 150px; height: 40px; border-radius: 6px; margin-right: 10px;">
+        <button id="light_mode_button" class="bhb_button" onclick="toggleLightMode()" style="width: 150px;">
             Toggle Dark Mode
         </button>
     </div>
@@ -40,66 +39,82 @@
     <div id="master_div" class="float-container" style="height: 60%;">
 
         <!-- BHB - This div contains all the elements for the main BHB application -->
-        <div id="bhb_div" class="mst_div float-child" style="text-align: left; width: 40%; margin-top:10px;">
+        <div id="bhb_div" class="mst_div float-child"
+            style="text-align: left; width: 40%; height:90%; margin-top:10px;">
             <h2>Blazin's Hex Blender (BHB)</h2>
 
-            <div id="master_code_div" class="slv_div" style="text-align: center; width: 35%;">
-                
-                <div id="code_box0">
+            <div id="master_code_div" class="slv_div" style="text-align: center; width: 35%; height: 50%;">
+
+                <div id="code_box0" class="code_box">
                     <label id="code_input_label0" for="code_input0" class="code_input_label">Code 1:</label>
                     <input id="code_input0" type="text" index=0 class="code_input">
                     <input id="color_picker0" type="color" class="color_picker">
-                    <button id="color_shifter0" disabled class="color_shifter"><bold>↑</bold></button>
+                    <button id="color_shifter0" disabled class="color_shifter">
+                        <bold>↑</bold>
+                    </button>
                 </div>
-                <div id="code_box1">
+                <div id="code_box1" class="code_box">
                     <label id="code_input_label1" for="code_input1" class="code_input_label">Code 2:</label>
                     <input id="code_input1" type="text" index=1 class="code_input">
                     <input id="color_picker1" type="color" class="color_picker">
-                    <button id="color_shifter1" title="Shift Code 2 up" class="color_shifter" onclick="shiftColor(1)"><bold>↑</bold></button>
+                    <button id="color_shifter1" title="Shift Code 2 up" class="color_shifter" onclick="shiftColor(1)">
+                        <bold>↑</bold>
+                    </button>
                 </div>
-                <div id="code_box2">
+                <div id="code_box2" class="code_box">
                     <label id="code_input_label2" for="code_input2" class="code_input_label">Code 3:</label>
                     <input id="code_input2" type="text" index=2 class="code_input">
                     <input id="color_picker2" type="color" class="color_picker">
-                    <button id="color_shifter2" title="Shift Code 3 up" class="color_shifter" onclick="shiftColor(2)"><bold>↑</bold></button>
+                    <button id="color_shifter2" title="Shift Code 3 up" class="color_shifter" onclick="shiftColor(2)">
+                        <bold>↑</bold>
+                    </button>
                 </div>
-                <div id="code_box3">
+                <div id="code_box3" class="code_box">
                     <label id="code_input_label3" for="code_input3" class="code_input_label">Code 4:</label>
                     <input id="code_input3" type="text" index=3 class="code_input">
                     <input id="color_picker3" type="color" class="color_picker">
-                    <button id="color_shifter3" title="Shift Code 4 up" class="color_shifter" onclick="shiftColor(3)"><bold>↑</bold></button>
+                    <button id="color_shifter3" title="Shift Code 4 up" class="color_shifter" onclick="shiftColor(3)">
+                        <bold>↑</bold>
+                    </button>
                 </div>
-                <div id="code_box4">
+                <div id="code_box4" class="code_box">
                     <label id="code_input_label4" for="code_input4" class="code_input_label">Code 5:</label>
                     <input id="code_input4" type="text" index=4 class="code_input">
                     <input id="color_picker4" type="color" class="color_picker">
-                    <button id="color_shifter4" title="Shift Code 5 up" class="color_shifter" onclick="shiftColor(4)"><bold>↑</bold></button>
+                    <button id="color_shifter4" title="Shift Code 5 up" class="color_shifter" onclick="shiftColor(4)">
+                        <bold>↑</bold>
+                    </button>
                 </div>
-                <div id="code_box5">
+                <div id="code_box5" class="code_box">
                     <label id="code_input_label5" for="code_input5" class="code_input_label">Code 6:</label>
                     <input id="code_input5" type="text" index=5 class="code_input">
                     <input id="color_picker5" type="color" class="color_picker">
-                    <button id="color_shifter5" title="Shift Code 6 up" class="color_shifter" onclick="shiftColor(5)"><bold>↑</bold></button>
+                    <button id="color_shifter5" title="Shift Code 6 up" class="color_shifter" onclick="shiftColor(5)">
+                        <bold>↑</bold>
+                    </button>
                 </div>
 
-                <button id="clear_all" title="Clear all code boxes"
-                    style="width: 100px; border-radius: 6px;  height: 40px; margin-right: 10px; margin-top: 10px;"
-                    onclick="clearAll()">
+                <button id="clear_all" title="Clear all code boxes" style="width: 100px; margin-top: 10px;"
+                    class="bhb_button" onclick="clearAll()">
                     Clear All
                 </button>
                 <button id="slot_machine_button" title="Randomize all code boxes in a &quot;fun&quot; animation"
                     onclick="this.disabled = true; slotMachine(); setTimeout(function() { document.getElementById('slot_machine_button').disabled = false; }, 2000);"
-                    style="width: 100px; border-radius: 6px; height: 40px; margin-right: 10px;">
+                    style="width: 100px;" class="bhb_button">
                     Slot Machine
                 </button>
 
                 <fieldset id="justification_fieldset" style="margin-top:10px">
-                    <legend title="When a string cannot be evenly split, there will need to be longer sections on one side.&#010;This setting changes which sides gets longer strings.">Justification:</legend>
+                    <legend
+                        title="When a string cannot be evenly split, there will need to be longer sections on one side.&#010;This setting changes which sides gets longer strings.">
+                        Justification:</legend>
                     <div>
-                        <input title="Favor longer strings on left" type="radio" id="left_just" class="just_picker" name="justification" value="left" checked>
+                        <input title="Favor longer strings on left" type="radio" id="left_just" class="just_picker"
+                            name="justification" value="left" checked>
                         <label title="Favor longer strings on left" for="left_just">Left</label>
 
-                        <input title="Favor longer strings on right" type="radio" id="right_just" class="just_picker" name="justification" value="right">
+                        <input title="Favor longer strings on right" type="radio" id="right_just" class="just_picker"
+                            name="justification" value="right">
                         <label title="Favor longer strings on right" for="right_just">Right</label>
                     </div>
                 </fieldset>
@@ -134,8 +149,8 @@
                 <div id="preview_label_container" style="margin-top: 5px; margin-bottom: 5px">
                 </div>
 
-                <button id="copy_button" onclick="copyFunctionBhb()"
-                    style="width: 35%; border-radius: 5px; height: 30px; margin-top: 5px; display: none;">
+                <button id="bhb_copy_button" onclick="copyFunctionBhb()"
+                    style="width: 35%; margin-top: 5px; display: none;" class="bhb_button">
                     Copy To Clipboard
                 </button>
 
@@ -176,8 +191,8 @@
 
                 <input id="cs2_enter_box" type="text"
                     style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
-                    onpaste="checkInputCS2()" oncut="checkInputCS2()"
-                    onchange="checkInputCS2()" onkeyup="checkInputCS2()"> 
+                    onpaste="checkInputCS2()" oncut="checkInputCS2()" onchange="checkInputCS2()"
+                    onkeyup="checkInputCS2()">
                 <input type="text" id="cs2_output_box" style="display: none;">
 
             </div>
@@ -194,7 +209,7 @@
                 <div id="cs2_preview_label_container" style="margin-top: 5px; margin-bottom: 5px"></div>
 
                 <button id="cs2_copy_button" onclick="copyFunctionCS2()"
-                    style="width: 35%; border-radius: 5px; height: 30px; margin-top: 5px; display: none;">
+                    style="width: 35%; margin-top: 5px; display: none;" class="bhb_button">
                     Copy To Clipboard
                 </button>
 
@@ -202,6 +217,42 @@
 
             <!-- CS2 Specific functions -->
             <script src="js/cs2Funcs.js"></script>
+
+        </div>
+
+        <!-- Manual Previewer - This div will be used to enter a nickname manually and preview it -->
+        <div id="manual_preview" class="mst_div float-child"
+            style="text-align: left; width: 40%; margin-left: 10px; margin-top:10px;">
+            <h2>Manual Nickname Previewer</h2>
+
+            <div id="mp_input_div" class="slv_div" style="width:60%">
+
+                <label for="mp_enter_box" style="padding-right: 10px;">
+                    Input:
+                </label>
+
+                <input id="mp_enter_box" type="text"
+                    style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
+                    onpaste="checkInputMP()" oncut="checkInputMP()" onchange="checkInputMP()" onkeyup="checkInputMP()">
+            </div>
+
+            <br class="mp-cond-break" style="display: none;">
+
+            <div id="mp_preview_box" class="slv_div"
+                style="border: 3px solid black; border-radius: 5px; padding: 10px; justify-content: space-around; width: 60%;">
+
+                <label id="mp_preview_box_label" for="mp_preview_box" style="padding-right: 10px; display: none;">
+                    Preview:
+                </label>
+
+                <div id="mp_preview_label_container" style="margin-top: 5px; margin-bottom: 5px;"></div>
+            </div>
+
+            <!-- Add a warning about black text assumption -->
+            <p style="font-weight: bold; font-size: medium; padding-left: 10px;">⚠ Warning: ⚠ <br> Uncolored text will be displayed as black text.<br> Your "true" uncolored text will vary by your rank.</p>
+                
+            <!-- MP Specific functions -->
+            <script src="js/mpFuncs.js"></script> 
 
         </div>
 
@@ -216,14 +267,17 @@
         </div>
         <div class="content-wrap" style="text-align:center">
             <div class="msg-wrap">
-                <p>This website uses cookies to store entries. These cookies are not used for tracking, and are not sold or shared with any other sites.</p>
+                <p>This website uses cookies to store entries. These cookies are not used for tracking, and are not sold
+                    or shared with any other sites.</p>
                 <div class="btn-wrap" style="text-align:center">
-                    <button title="Accept cookie storage" style="width: 35%; border-radius: 5px; height: 30px; float:inline-start; margin-right: 40px" 
+                    <button title="Accept cookie storage"
+                        style="width: 35%; border-radius: 5px; height: 30px; float:inline-start; margin-right: 40px"
                         class="btn-primary" onclick="acceptCookieConsent();">Accept Cookies</button>
                 </div>
                 <div class="btn-wrap" style="text-align:center">
-                    <button title="One cookie will be stored, to denote no further storage." style="width: 35%; border-radius: 5px; height: 30px; float:inline-start"
-                        class="btn-secondary" onclick="declineCookieConsent();">Decline Cookies</button>
+                    <button title="One cookie will be stored, to denote no further storage."
+                        style="width: 35%; border-radius: 5px; height: 30px; float:inline-start" class="btn-secondary"
+                        onclick="declineCookieConsent();">Decline Cookies</button>
                 </div>
             </div>
         </div>
@@ -241,6 +295,7 @@
 
     <script>
         checkInputCS2();
+        checkInputMP();
     </script>
 
 </body>

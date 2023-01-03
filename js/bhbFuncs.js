@@ -132,7 +132,7 @@ function buildPreviewBhb(input) {
     
     var div = document.getElementById('preview_box');
     var div2 = document.getElementById('preview_label_container');
-    var copyButton = document.getElementById('copy_button');
+    var copyButton = document.getElementById('bhb_copy_button');
     var label = document.getElementById('preview_box_label');
 
     //Clear old preview

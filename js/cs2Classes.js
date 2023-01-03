@@ -16,4 +16,8 @@ Scheme.prototype.nextCode = function(){
 function CS2ColorCode(hex, value) {
     this.hex = hex;
     this.value = value;
+
+    this.getHex = function () {
+        return this.hex;
+    }
 }

@@ -51,3 +51,12 @@ cs2Schemes.push(new Scheme("Rainbow", rainbowSchemeColors));
 var orderedSchemeColors = [];
 for (var col in mcc) orderedSchemeColors.push(mcc[col]);
 cs2Schemes.push(new Scheme("Ordered", orderedSchemeColors));
+
+function findHexFromChar(colorChar) {
+    if(!colorChar) return "";
+    let cC = colorChar.toLowerCase();
+    for(let CS2CC in mcc) {
+        if(mcc[CS2CC].value == cC) return mcc[CS2CC].getHex().replace("#", "");
+    }
+    return "";
+}
