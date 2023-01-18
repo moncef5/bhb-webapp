@@ -206,4 +206,40 @@ function declineCookieConsent(){
     document.getElementById("cookieNotice").style.display = "none";
 }
 
+//Reload all previews
+function fontChanged(oldvalue){
+
+    if(document.getElementById('font_select').value == 'Upload'){
+
+        var url = prompt('Enter the URL of the font file:');
+        if (url == null || url == '') document.getElementById('font_select').value = oldvalue;
+        else{
+            var name = prompt("Enter the name of the font:");
+            if (name == null || name == '') document.getElementById('font_select').value = oldvalue;
+            else{
+                const style = document.createElement('style');
+                style.innerHTML = `
+                  @font-face {
+                    font-family: ${name};
+                    src: url(${url});
+                  }
+                `;
+                document.head.appendChild(style);
+    
+                var newOpt = document.createElement('option');
+                newOpt.value = name;
+                newOpt.innerHTML = name;
+                //Insert before the last option
+                document.getElementById('font_select').insertBefore(newOpt, document.getElementById('font_select').lastElementChild);
+                //Select the new option
+                document.getElementById('font_select').value = name;
+            }
+        }
+    }
+
+    checkInputMP();
+    checkInputCS2();
+    checkInput();
+}
+
 document.getElementById("cookieNotice").style.display = (getCookie("user_cookie_consent") == "" ? "block" : "none");

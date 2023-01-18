@@ -1,7 +1,10 @@
 /* Add a black background color to the top navigation */
 .topnav {
+    display: flex;
     background-color: #858a93;
     overflow: hidden;
+    align-items: center;
+    vertical-align: middle;
 }
 
 /* Style the links inside the navigation bar */

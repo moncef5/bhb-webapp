@@ -146,11 +146,14 @@ function buildPreviewBhb(input) {
     */
     var inputSplit = input.split("&").slice(1);
 
+    //Create an addendum for font
+    var fontAddendum = document.getElementById('font_select').value != 'default' ? " font-family: " + document.getElementById('font_select').value + ";" : "";
+
     //Create a label for each character
     inputSplit.forEach(element => {
 
         var label = document.createElement('label');
-        label.style = "color: " + element.substring(0, 7) + ";";
+        label.style = "color: " + element.substring(0, 7) + ";" + fontAddendum;
         label.innerText = element.substring(7, 8);
 
         div2.appendChild(label);

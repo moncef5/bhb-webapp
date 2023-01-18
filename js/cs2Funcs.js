@@ -39,13 +39,17 @@ function buildPreviewCS2(input, scheme) {
     var compOut = '';
 
     if (scheme != 'default') {
+
+        //Create an addendum for font
+        var fontAddendum = document.getElementById('font_select').value != 'default' ? " font-family: " + document.getElementById('font_select').value + ";" : "";
+
         //Create new preview
         charSplit.forEach(c => {
 
             let nextColor = scheme.nextCode();
 
             var label = document.createElement('label');
-            label.style = "color: " + nextColor.hex + ";";
+            label.style = "color: " + nextColor.hex + ";" + fontAddendum;
             label.innerText = c;
 
             if(c == ' ') scheme.index--;
@@ -57,6 +61,15 @@ function buildPreviewCS2(input, scheme) {
     }
 
     //Show the preview if there is something to show, else hide the entire div
+    const showElements = (div2.innerHTML != '');
+
+    div.style.display = showElements ? 'block' : 'none';
+    div.style.border = showElements ? '3px solid black' : '0px solid black';
+    label.style.display = showElements ? 'inline' : 'none';
+    copyButton.style.display = showElements ? 'inline' : 'none';
+    Array.from(document.getElementsByClassName('cs2-cond-break')).forEach(b => b.style.display = showElements ? 'inline' : 'none');
+
+    /*
     if (div2.innerHTML == '') {
         div.style.display = 'none';
         div.style.border = '0px solid black';
@@ -71,6 +84,6 @@ function buildPreviewCS2(input, scheme) {
         copyButton.style.display = 'inline';
         Array.from(document.getElementsByClassName('cs2-cond-break')).forEach(b => b.style.display = 'inline');
     }
-
+*/
     return compOut;
 }

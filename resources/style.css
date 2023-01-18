@@ -1,3 +1,18 @@
+@font-face {
+    font-family: "Minecraft";
+    src: url("fonts/Minecraft.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Wingdings";
+    src: url("fonts/Wingding.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Arial";
+    src: url("fonts/Arial.ttf") format("truetype");
+}
+
 body {
     padding: 25px;
     background-color: #60646c;
@@ -41,6 +56,11 @@ button[class="bhb_button"] {
     margin-right:10px;
 }
 
+select[class="bhb_select"] {
+    border-radius: 3px;
+    margin-right:10px;
+}
+
 fieldset {
     border: 2px solid black;
     border-radius: 5px;
@@ -71,7 +91,7 @@ input:disabled {
     box-shadow: 5px 5px;
     border: 6px solid black;
     border-radius: 10px;
-    padding: 10px;      
+    padding: 10px;
 }
 
 .slv_div {

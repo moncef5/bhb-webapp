@@ -34,6 +34,14 @@
         <button id="light_mode_button" class="bhb_button" onclick="toggleLightMode()" style="width: 150px;">
             Toggle Dark Mode
         </button>
+        <label for="font_select" style="font-size: 18px;">Preview Font:</label>
+        <select id="font_select" class="bhb_select" style="margin-left: 10px; padding: 1%; text-align: center;" onfocus="this.oldvalue = this.value" onchange="fontChanged(this.oldvalue); this.oldvalue = this.value;">
+            <option selected value="default"> -- System Default -- </option>
+            <option value="Arial">Arial</option>
+            <option value="Minecraft">Minecraft</option>
+            <option value="Wingdings">Wingdings (Why)</option>
+            <option value="Upload">Upload TTF File from URL</option>
+        </select>
     </div>
 
     <div id="master_div" class="float-container" style="height: 60%;">
