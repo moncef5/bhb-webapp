@@ -97,6 +97,9 @@ function updateBHBCookies() {
 
     //Add MP input to the cookie
     setCookie('mp_input', document.getElementById('mp_enter_box').value);
+
+    //Add font to the cookie
+    setCookie('font_select', document.getElementById('font_select').value);
 }
 
 //Clear all existing cookies
@@ -157,6 +160,10 @@ function handleBHBCookies() {
 
     //Handle dark mode in cookie
     if (dark == 'false') toggleLightMode();
+
+    //Handle font in cookie
+    var font = getCookie('font_select');
+    if (document.querySelector(`option[value="${font}"]`)) document.getElementById('font_select').value = font;
 
     checkInput();
     checkInputCS2();
@@ -240,6 +247,8 @@ function fontChanged(oldvalue){
     checkInputMP();
     checkInputCS2();
     checkInput();
+
+    updateBHBCookies();
 }
 
 document.getElementById("cookieNotice").style.display = (getCookie("user_cookie_consent") == "" ? "block" : "none");
