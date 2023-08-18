@@ -903,26 +903,22 @@
     </div>
 
     <!-- Cookie Consent -->
-    <div id="cookieNotice" class="cookie-overlay p-4 d-none" style="display: none;">
+    <div id="cookieNotice" class="cookie-overlay p-4 d-none" style="display: none; text-align: center;">
         <div id="closeIcon" style="display: none;">
         </div>
         <div class="title-wrap">
             <h4><u><strong>Cookie Consent:</strong></u></h4>
         </div>
-        <div class="content-wrap" style="text-align:center">
-            <div class="msg-wrap">
-                <p>This website uses cookies to store entries. These cookies are not used for tracking, and are not sold
+        <div class="content-wrap" style="text-align:center; display: block;">
+            <div style="text-align: center;">
+                <p>This website uses cookies to store entries (codes and inputs) between visits.<br>These cookies are not used for tracking, and are not sold
                     or shared with any other sites.</p>
-                <div class="btn-wrap" style="text-align:center">
-                    <button title="Accept cookie storage"
-                        style="width: 35%; border-radius: 5px; height: 30px; float:inline-start; margin-right: 40px"
-                        class="btn-primary" onclick="acceptCookieConsent();">Accept Cookies</button>
-                </div>
-                <div class="btn-wrap" style="text-align:center">
-                    <button title="One cookie will be stored, to denote no further storage."
-                        style="width: 35%; border-radius: 5px; height: 30px; float:inline-start" class="btn-secondary"
-                        onclick="declineCookieConsent();">Decline Cookies</button>
-                </div>
+                <button title="Accept cookie storage"
+                style="width: 35%; border-radius: 5px; height: 30px; margin-right: 40px"
+                class="btn-primary" onclick="acceptCookieConsent();">Accept Cookies</button>
+                <button title="One cookie will be stored, to denote no further storage."
+                style="width: 35%; border-radius: 5px; height: 30px;" class="btn-secondary"
+                onclick="declineCookieConsent();">Decline Cookies</button>
             </div>
         </div>
     </div>
@@ -1085,7 +1081,7 @@
             cs2Lookup[mcc[color].value] = mcc[color].getHex();
         }
 
-        document.getElementById("cookieNotice").style.display = (getCookie("user_cookie_consent") == "" ? "block" : "none");
+        document.getElementById("cookieNotice").style.display = (getCookie("user_cookie_consent") == "0" ? "block" : "none");
 
         handleBHBCookies();
         checkInputCS2();

@@ -1,3 +1,4 @@
+/* Fonts */
 @font-face {
     font-family: "Minecraft";
     src: url("fonts/Minecraft.ttf") format("truetype");
@@ -13,39 +14,24 @@
     src: url("fonts/Arial.ttf") format("truetype");
 }
 
+/* Dark Mode */
 @media (prefers-color-scheme: dark) {
     body {
         background-color: #60646c;
         color: black;
     }
-    input[type="text"] {
-        background-color: #989ca4;
-    }
-    select {
-        background-color: #8f9196;
-    }
+    input[type="text"],
+    select,
     input[type="color"] {
         background-color: #989ca4;
     }
-    button {
-        background-color: #84868c;
-    }
-    fieldset {
-        background-color: #84868c;
-    }
-    input:disabled {
-        background-color: #787c84;
-    }
-    .mst_div {
-        background-color: #858a93;
-    }
-    
-    .slv_div {
-        background-color: #a0a4ab;
-    }
-
+    button,
+    fieldset,
+    input:disabled,
+    .mst_div,
+    .slv_div,
     .topnav {
-        background-color: #858a93;
+        background-color: #84868c;
     }
     .topnav a {
         color: #f2f2f2;
@@ -59,51 +45,24 @@
         color: white;
     }
 }
+
+/* Light Mode */
 @media (prefers-color-scheme: light) {
     body {
         background-color: #f8f4f4;
         color: black;
     }
-    
-    fieldset{
-        background-color: white;
-    }
-    
-    input[type="text"] {
-        background-color: white;
-    }
-    
-    select {
-        background-color: white;
-    }
-    
-    input[type="color"] {
-        background-color: white;
-    }
-    
-    button {
-        background-color: #FFFFFF;
-        pointer-events: all;
-    }
-    
-    input:disabled {
-        background-color: #d3d3d3;
-    }
-    
-    div[class="mst_div topnav"] {
-        background-color: #FFFFFF;
-    }
-    
-    div[class="mst_div float-child"] {
-        background-color: #FFFFFF;
-    }
-    
-    div[class="slv_div"] {
-        background-color: #FFFFFF;
-    }
-
+    fieldset,
+    input[type="text"],
+    select,
+    input[type="color"],
+    button,
+    input:disabled,
+    div.mst_div.topnav,
+    div.mst_div.float-child,
+    div.slv_div,
     .topnav {
-        background-color: #FFFFFF;
+        background-color: white;
     }
     .topnav a {
         color: black;
@@ -118,7 +77,7 @@
     }
 }
 
-/* Add a black background color to the top navigation */
+/* Common Styles */
 .topnav {
     display: flex;
     overflow: hidden;
@@ -126,7 +85,6 @@
     vertical-align: middle;
 }
 
-/* Style the links inside the navigation bar */
 .topnav a {
     float: left;
     text-align: center;
@@ -146,12 +104,12 @@ h2 {
 }
 
 input[type="color"] {
-    height:25px;
+    height: 25px;
     margin-right: 5px;
 }
 
-div[class="code_box"] {
-    align-items: center; 
+div.code_box {
+    align-items: center;
     margin-top: 2px;
 }
 
@@ -160,15 +118,15 @@ button {
     pointer-events: all;
 }
 
-button[class="bhb_button"] {
+button.bhb_button {
     border-radius: 6px;
     height: 30px;
-    margin-right:10px;
+    margin-right: 10px;
 }
 
-select[class="bhb_select"] {
+select.bhb_select {
     border-radius: 3px;
-    margin-right:10px;
+    margin-right: 10px;
 }
 
 fieldset {
@@ -183,7 +141,7 @@ fieldset {
     border: 2px solid black;
     margin-right: 10px;
     border-radius: 4px;
-    padding-right: 10px
+    padding-right: 10px;
 }
 
 .code_input_label {
@@ -191,7 +149,7 @@ fieldset {
     padding-right: 10px;
 }
 
-.mst_div {
+.mst_div, .slv_div {
     box-shadow: 5px 5px;
     border: 6px solid black;
     border-radius: 10px;
@@ -200,9 +158,6 @@ fieldset {
 
 .slv_div {
     box-shadow: 3px 3px;
-    border: 3px solid black;
-    border-radius: 10px;
-    padding: 10px;
 }
 
 .float-child {
@@ -210,18 +165,53 @@ fieldset {
     padding: 20px;
 }
 
-.cookie-overlay {
-
+/* Cookie Consent */
+#cookieNotice {
+    display: none;
     position: fixed;
-    width: 50%;
-    bottom: 1rem;
-    left: 1rem;
-    padding: 0.8rem;
-    z-index: 2051;
-    line-height: 20px;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 400px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    text-align: center;
+}
+
+#cookieNotice h4 {
+    margin-bottom: 15px;
     font-size: 18px;
-    border-radius: 6px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    margin-left: 25%;
-  
-  }
+}
+
+#cookieNotice p {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.cookie-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.cookie-btn.accept {
+    background-color: #007bff;
+    color: #fff;
+    margin-right: 10px;
+}
+
+.cookie-btn.decline {
+    background-color: #ccc;
+    color: #000;
+}
+
+#closeIcon {
+    display: none;
+}
