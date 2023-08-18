@@ -1,6 +1,650 @@
 <!DOCTYPE HTML>
 <html lang="en">
 
+<script>
+    'use strict';
+    function Scheme(name, codes) {
+
+        this.name = name;
+        this.codes = codes;
+        this.index = 0;
+    }
+
+    Scheme.prototype.nextCode = function () {
+        var curIndex = this.index;
+        this.index = (this.index++ == (this.codes.length - 1) ? 0 : this.index++);
+        return this.codes[curIndex];
+    }
+
+    function CS2ColorCode(hex, value) {
+        this.hex = hex;
+        this.value = value;
+
+        this.getHex = function () {
+            return this.hex;
+        }
+    }
+
+    function checkInputMP() {
+        var input = document.getElementById('mp_enter_box').value;
+
+        if (input != '') buildPreviewMP(input);
+        else buildPreviewMP("");
+
+        updateBHBCookies();
+    }
+
+    function buildPreviewMP(input) {
+        var div = document.getElementById('mp_preview_box');
+        var div2 = document.getElementById('mp_preview_label_container');
+        var label = document.getElementById('mp_preview_box_label');
+
+        //Clear old preview
+        div2.innerHTML = '';
+
+        // Create a document fragment to hold the span elements
+        const fragment = document.createDocumentFragment();
+
+        // Create a regular expression to match formatting codes and non-formatted text
+        const formatRegex = /&#[0-9a-fA-F]{6}|&[0-9a-fA-F]{1}|&|[^&]/g;
+
+        // Start off by assuming the color is black
+        let curColor = '000000';
+
+        const fontAddendum = document.getElementById('font_select').value != 'default' ? " font-family: " + document.getElementById('font_select').value + ";" : "";
+
+        // Use the exec method to iterate over the matches
+        let match;
+        while ((match = formatRegex.exec(input)) !== null) {
+            if (match[0] === '&') {
+                const span = document.createElement('span');
+                span.style = "color: #" + curColor + ";" + fontAddendum;
+                span.innerText = '&';
+                fragment.appendChild(span);
+            } else if (match[0][0] === '&') {
+                if (match[0][1] === '#') {
+                    curColor = match[0].slice(2, 8);
+                } else if (/^[0-9a-fA-F]$/.test(match[0][1])) {
+                    curColor = cs2Lookup[match[0][1].toLowerCase()].replace('#', '');
+                } else {
+                    const span = document.createElement('span');
+                    span.style = "color: #" + curColor + ";" + fontAddendum;
+                    span.innerText = '&';
+                    fragment.appendChild(span);
+                    curColor = '000000';
+                }
+            } else {
+                const span = document.createElement('span');
+                span.style = "color: #" + curColor + ";" + fontAddendum;
+                span.innerText = match[0];
+                fragment.appendChild(span);
+            }
+        }
+
+        // Append the span elements to the div2 element
+        div2.appendChild(fragment);
+
+        //Show the preview if there is something to show, else hide the entire div
+        const displayValue = div2.innerHTML == '' ? 'none' : 'block';
+        div.style.display = displayValue;
+        div.style.border = displayValue == 'none' ? '0px solid black' : '3px solid black';
+        label.style.display = displayValue;
+        Array.from(document.getElementsByClassName('mp-cond-break')).forEach(b => b.style.display = displayValue == 'none' ? 'none' : 'inline');
+    }
+
+    let bhbOutput = '';
+    let cs2Output = '';
+
+    function randomHexColor() {
+        return Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
+    }
+
+    /*
+    Sleep for [delay] number of milliseconds
+    */
+    function sleep(delay) {
+        var start = new Date().getTime();
+        while (new Date().getTime() < start + delay);
+    }
+
+    function animate({ timing, draw, duration }) {
+
+        let start = performance.now();
+
+        requestAnimationFrame(function animate(time) {
+            // timeFraction goes from 0 to 1
+            let timeFraction = (time - start) / duration;
+            if (timeFraction > 1) timeFraction = 1;
+
+            // calculate the current animation state
+            let progress = timing(timeFraction)
+
+            draw(progress); // draw it
+
+            if (timeFraction < 1) {
+                requestAnimationFrame(animate);
+            }
+
+        });
+    }
+
+    //Validate the hex color is good
+    function isHexOk(hex) {
+        return (hex.length == 6 && !isNaN(parseInt(hex, 16)));
+    }
+
+    //Cookie functions
+    function updateBHBCookies() {
+
+        //Only set the cookie if the user has accepted cookies
+        let cookie_consent = getCookie('user_cookie_consent');
+
+        //If the user has not accepted cookies, or has not interacted with the prompt, do not set any cookies
+        if (cookie_consent == '0' || cookie_consent == '' || cookie_consent == undefined) {
+            setCookie('user_cookie_consent', '0');
+            return;
+        }
+
+        //Start compiling the cookie
+        var inputs = '';
+
+        //Add code fields to the cookie
+        var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
+        //For each field, if the value exists, or there is a value after it, add the field.
+        // after checking was done to prevent 'disabled' fields from being excluded from the cookie
+        fields.forEach((f, i) => inputs += ((isHexOk(f.value) || f.value == '' && i < 5 && fields[i + 1].value != '') ? f.value + ',' : ''));
+        inputs = inputs.slice(0, -1);
+
+        //Add color codes to the cookies
+        setCookie('bhb_codes', inputs);
+
+        //Add justification to the cookie
+        setCookie('justification', document.getElementById('left_just').checked ? 'left' : 'right');
+
+        //Add input to the cookie
+        setCookie('bhb_input', document.getElementById('main_enter_box').value);
+
+        //Add CS2 scheme to the cookie
+        setCookie('cs2_scheme', document.getElementById('cs2_scheme_select').value);
+
+        //Add CS2 input to the cookie
+        setCookie('cs2_input', document.getElementById('cs2_enter_box').value);
+
+        //Add MP input to the cookie
+        setCookie('mp_input', document.getElementById('mp_enter_box').value);
+
+        //Add font to the cookie
+        setCookie('font_select', document.getElementById('font_select').value);
+    }
+
+    //Clear all existing cookies
+    function deleteAllCookies() {
+        var cookies = document.cookie.split(";");
+        for (const cookie of cookies)
+            eraseCookie(cookie.split("=")[0]);
+    }
+
+    function eraseCookie(name, domain, path) {
+        domain = domain || document.domain;
+        path = path || "/";
+        document.cookie = name + "=; samesite=none; expires=" + +new Date + "; domain=" + domain + "; path=" + path;
+    }
+
+    //Parse an existing cookie
+    function handleBHBCookies() {
+
+        var cookie = document.cookie;
+        if (cookie == '') {
+            checkInput();
+            return;
+        }
+
+        //Bhb inputs
+        var codes = getCookie('bhb_codes').split(',');
+        var just = getCookie('justification');
+        var input = getCookie('bhb_input');
+        var cs2scheme = getCookie('cs2_scheme');
+        //cs2input should only get up to the first semi-colon
+        var cs2input = getCookie('cs2_input').split(';')[0];
+        var mpinput = getCookie('mp_input');
+
+        //Handle codes in cookie
+        var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
+        fields.forEach((f, i) => {
+            if (codes[i] && isHexOk(codes[i])) f.value = codes[i];
+            f.dispatchEvent(new Event('change'));
+        });
+
+        //Handle input in cookie
+        if (input) document.getElementById('main_enter_box').value = input;
+
+        if (just) {
+            if (just == 'left') document.getElementById('left_just').checked = true;
+            else document.getElementById('right_just').checked = true;
+        }
+
+        //Handle CS2 input in cookie
+        if (cs2input) document.getElementById('cs2_enter_box').value = cs2input;
+
+        //Handle CS2 scheme in cookie
+        if (cs2scheme) document.getElementById('cs2_scheme_select').value = cs2scheme;
+
+        //Handle MP input in cookie
+        if (mpinput) document.getElementById('mp_enter_box').value = mpinput;
+
+        //Handle font in cookie
+        var font = getCookie('font_select');
+        if (document.querySelector(`option[value="${font}"]`)) document.getElementById('font_select').value = font;
+
+        checkInput();
+        checkInputCS2();
+    }
+
+    // Create cookie
+    function setCookie(cname, cvalue) {
+        document.cookie = cname + "=" + cvalue + "; samesite=none; secure; max-age=31536000; path=/";
+    }
+
+    //Delete cookie
+    function deleteCookie(cname) {
+        const d = new Date();
+        d.setTime(d.getTime() + (24 * 60 * 60 * 1000));
+        let expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=;samesite=none;secure;" + expires + ";path=/";
+    }
+
+    //Read cookie
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (const element of ca) {
+            let c = element;
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    // Set cookie consent
+    function acceptCookieConsent() {
+        deleteCookie('user_cookie_consent');
+        setCookie('user_cookie_consent', 1);
+        document.getElementById("cookieNotice").style.display = "none";
+    }
+
+    function declineCookieConsent() {
+        deleteAllCookies();
+        deleteCookie('user_cookie_consent');
+        setCookie('user_cookie_consent', 0);
+        document.getElementById("cookieNotice").style.display = "none";
+    }
+
+    //Reload all previews
+    function fontChanged(oldvalue) {
+
+        if (document.getElementById('font_select').value == 'Upload') {
+
+            var url = prompt('Enter the URL of the font file:');
+            if (url == null || url == '') document.getElementById('font_select').value = oldvalue;
+            else {
+                var name = prompt("Enter the name of the font:");
+                if (name == null || name == '') document.getElementById('font_select').value = oldvalue;
+                else {
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+                  @font-face {
+                    font-family: ${name};
+                    src: url(${url});
+                  }
+                `;
+                    document.head.appendChild(style);
+
+                    var newOpt = document.createElement('option');
+                    newOpt.value = name;
+                    newOpt.innerHTML = name;
+                    //Insert before the last option
+                    document.getElementById('font_select').insertBefore(newOpt, document.getElementById('font_select').lastElementChild);
+                    //Select the new option
+                    document.getElementById('font_select').value = name;
+                }
+            }
+        }
+
+        checkInputMP();
+        checkInputCS2();
+        checkInput();
+
+        updateBHBCookies();
+    }
+
+    function copyFunctionBhb() {
+        document.getElementById('main_output_box').style.display = 'inline';
+        document.getElementById('main_output_box').select();
+        document.execCommand('copy');
+        document.getElementById('main_output_box').style.display = 'none';
+    }
+
+    function findSplitLengths(word, numSplits) {
+
+        //List of lengths of each split
+        var solutions = [];
+
+        var roughSolution = parseInt(Math.ceil(parseFloat(word.length) / numSplits), 10);
+        var remaining = word.length;
+
+        var reduced = false;
+
+        for (var i = 0; i < numSplits; ++i) {
+            var x = (roughSolution - 1) * (numSplits - i);
+            if (!reduced && x === remaining) {
+                roughSolution -= 1;
+                reduced = true;
+            }
+
+            solutions.push(roughSolution);
+            remaining -= roughSolution;
+        }
+
+        return solutions;
+    }
+
+    function findSplits(rightJustified, splitsLengths, input) {
+
+        var result = [];
+        if (rightJustified) splitsLengths = splitsLengths.reverse();
+
+        var newIndex = 0;
+        for (var i = 0; i < splitsLengths.length; i++) {
+            result[i] = input.substring(newIndex, newIndex + splitsLengths[i]);
+            newIndex += splitsLengths[i];
+        }
+
+        return result;
+    }
+
+    function blendTwo(hexOne, hexTwo, input) {
+
+        //Start to compile the output
+        var output = "";
+
+        //Put the R, G, and B values for each into an array
+        let componentsOne = [hexR(hexOne), hexG(hexOne), hexB(hexOne)];
+        let componentsDif = [hexR(hexTwo) - hexR(hexOne), hexG(hexTwo) - hexG(hexOne), hexB(hexTwo) - hexB(hexOne)];
+
+        //Loop through each step
+        for (var j = 0; j <= (input.length - 1); ++j) {
+            //Append the signifier
+            output += "&#";
+            //Append each hex value's parts
+            componentsOne.forEach((c, i) => output += padHex(c + (componentsDif[i] * (j / (input.length - 1)))).toUpperCase());
+            //Append the index character to the output
+            output += input[j];
+        }
+
+        return output;
+    }
+
+    function blendMain(howManyCodes, input, codeList) {
+
+        //Get the "Right justified" setting from the HTML
+        var rightJustified = document.getElementById("right_just").checked;
+
+        //Create an output
+        var output = "";
+        //Find the splits of the input
+        var splits = findSplits(rightJustified, findSplitLengths(input, (howManyCodes - 1)), input);
+
+        //Compile the output
+        for (var i = 0, codeIndex = 0; i < splits.length; i++, codeIndex++) {
+            if (i !== (splits.length - 1)) splits[i] = (splits[i] + splits[i + 1].substring(0, 1));
+
+            var addendum = blendTwo(codeList[codeIndex], codeList[codeIndex + 1], splits[i]);
+            output += (i !== (splits.length - 1) ? addendum.substring(0, addendum.length - 9) : addendum);
+        }
+
+        return output;
+    }
+
+    function padHex(input) {
+        var convertedHex = Math.round(input).toString(16);
+        return convertedHex.length == 1 ? "0" + convertedHex : convertedHex;
+    }
+
+    function hexR(hex) { return parseInt(hex.substring(0, 2), 16) }
+    function hexG(hex) { return parseInt(hex.substring(2, 4), 16) }
+    function hexB(hex) { return parseInt(hex.substring(4, 6), 16) }
+
+    function slotMachine() {
+
+        var codeBoxesArr = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
+        var colorPickerArr = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
+        var intProgress = 0;
+
+        animate({//Timing loop
+            duration: 2520,
+            timing: function (timeFraction) {
+                return timeFraction;
+            },
+            draw: function (progress) {
+                if (progress % 2 != 0) {
+                    for (var j = 5; j >= Math.floor(intProgress / 40); --j) {
+                        codeBoxesArr[j].value = randomHexColor();
+                        colorPickerArr[j].value = "#" + codeBoxesArr[j].value;
+                        if (intProgress < 10) unlockFields();
+                        checkInput();
+                    }
+                }
+                sleep(4);
+                intProgress++;
+            }
+        });
+    }
+
+    function clearAll() {
+        Array.prototype.slice.call(document.getElementsByClassName("code_input")).forEach(i => i.value = '');
+        Array.prototype.slice.call(document.getElementsByClassName("color_picker")).forEach(p => p.value = "#000000");
+        checkInput();
+        unlockFields();
+    }
+
+    function buildPreviewBhb(input) {
+
+        var div = document.getElementById('preview_box');
+        var div2 = document.getElementById('preview_label_container');
+        var copyButton = document.getElementById('bhb_copy_button');
+        var label = document.getElementById('preview_box_label');
+
+        //Clear old preview
+        div2.innerHTML = "";
+
+        /*
+            Input will be in the form &#FF00FF{char}, etc., where each character will be preceded by a color code
+            The following code will split the input into an array of corresponding color codes and characters:
+    
+            [#FF00FF[char: A], #00FF00[char: B], #0000FF[char: C], etc.]
+        */
+        var inputSplit = input.split("&").slice(1);
+
+        //Create an addendum for font
+        var fontAddendum = document.getElementById('font_select').value != 'default' ? " font-family: " + document.getElementById('font_select').value + ";" : "";
+
+        //Create a label for each character
+        inputSplit.forEach(element => {
+
+            var label = document.createElement('label');
+            label.style = "color: " + element.substring(0, 7) + ";" + fontAddendum;
+            label.innerText = element.substring(7, 8);
+
+            div2.appendChild(label);
+        });
+
+        var hideCondition = (div2.innerHTML == '' || input.length == 0 || input == null || input == undefined);
+
+        div.style.display = (hideCondition ? 'none' : 'block');
+        div.style.border = ((hideCondition ? '0px' : '3px') + 'solid black');
+        label.style.display = (hideCondition ? 'none' : 'inline');
+        copyButton.style.display = (hideCondition ? 'none' : 'inline');
+        Array.from(document.getElementsByClassName('cond-break')).forEach(b => b.style.display = (hideCondition ? 'none' : 'inline'));
+    }
+
+    //Figure out which fields should be enabled/disabled
+    function unlockFields() {
+
+        var fields = Array.from(document.getElementsByClassName("code_input"));
+        var pickers = Array.from(document.getElementsByClassName("color_picker"));
+
+        // f=field, i=index
+        fields.forEach((f, i) => {
+            if (i + 1 < 6) {
+                fields[i + 1].disabled = !(f.value.length == 6 && !f.disabled);
+                pickers[i + 1].disabled = !(f.value.length == 6 && !f.disabled);
+            }
+        });
+
+        Array.from(document.getElementsByClassName("color_shifter")).forEach((shifter, i) => {
+            shifter.disabled = !(i !== 0 && fields[i].value.length === 6 && !fields[i].disabled);
+        });
+    }
+
+    /*
+        Given an index, swap the code with the code at the index - 1
+    */
+    function shiftColor(index) {
+        var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
+        var pickers = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
+
+        var currentIndexColor = fields[index].value;
+        var oneUpIndexColor = fields[index - 1].value;
+
+        fields[index].value = oneUpIndexColor;
+        pickers[index].value = "#" + oneUpIndexColor;
+
+        fields[index - 1].value = currentIndexColor;
+        pickers[index - 1].value = "#" + currentIndexColor;
+
+        unlockFields();
+        checkInput();
+    }
+
+    function checkInput() {
+        //Need to be at least 2 valid codes
+        var validCodes = 0;
+        //Compile the code fields
+        var codeFields = function () { var x = []; for (var i = 0; i < 6; i++) { x.push(document.getElementById('code_input' + i)); } return x; }();
+        //Count number of valid codes
+        codeFields.forEach(el => { if (isHexOk(el.value) && !el.disabled) validCodes++; });
+
+        var bhbOutput;
+
+        //Build the preview if conditions are met
+        if (validCodes >= 2 && (document.getElementById('main_enter_box').value.length >= (validCodes * 2) - 1)) {
+            bhbOutput = blendMain(validCodes, document.getElementById('main_enter_box').value, codeFields.map(f => { return (!f.disabled ? f.value : '') }));
+        }
+        else bhbOutput = '';
+
+        buildPreviewBhb(bhbOutput);
+
+        updateBHBCookies();
+        document.getElementById('main_output_box').value = bhbOutput;
+    }
+
+    function findScheme(input) {
+        var scheme = cs2Schemes.find(s => s.name == input);
+        return scheme;
+    }
+
+    function checkInputCS2() {
+        var input = document.getElementById('cs2_enter_box').value;
+        var scheme = document.getElementById('cs2_scheme_select').value;
+
+        if (input != '' && scheme != 'default') var cs2Output = buildPreviewCS2(input, findScheme(scheme));
+        else cs2Output = buildPreviewCS2("", 'default');
+
+        updateBHBCookies();
+        document.getElementById('cs2_output_box').value = cs2Output;
+    }
+
+    function copyFunctionCS2() {
+        document.getElementById('cs2_output_box').style.display = 'inline';
+        document.getElementById('cs2_output_box').select();
+        document.execCommand('copy');
+        document.getElementById('cs2_output_box').style.display = 'none';
+    }
+
+    function buildPreviewCS2(input, scheme) {
+
+        if(scheme != 'default')
+            scheme.index = 0;
+
+        var div = document.getElementById('cs2_preview_box');
+        var div2 = document.getElementById('cs2_preview_label_container');
+        var copyButton = document.getElementById('cs2_copy_button');
+        var label = document.getElementById('cs2_preview_box_label');
+
+        //Clear old preview
+        while (div2.firstChild) {
+            div2.removeChild(div2.firstChild);
+        }
+
+        var charSplit = input.split('');
+        var compOut = '';
+
+        if (scheme != 'default') {
+            //Create an addendum for font
+            var fontAddendum = document.getElementById('font_select').value != 'default' ? " font-family: " + document.getElementById('font_select').value + ";" : "";
+
+            //Create new preview
+            charSplit.forEach(c => {
+
+                let nextColor = scheme.nextCode();
+
+                var label = document.createElement('label');
+                label.style = "color: " + nextColor.hex + ";" + fontAddendum;
+                label.innerText = c;
+
+                if (c == ' ') scheme.index--;
+
+                div2.appendChild(label);
+
+                compOut += "&" + (nextColor.value.length == 6 ? ("#" + nextColor.value) : nextColor.value) + c;
+            });
+        }
+
+        //Show the preview if there is something to show, else hide the entire div
+        const showElements = (div2.innerHTML != '');
+
+        div.style.display = showElements ? 'block' : 'none';
+        div.style.border = showElements ? '3px solid black' : '0px solid black';
+        label.style.display = showElements ? 'inline' : 'none';
+        copyButton.style.display = showElements ? 'inline' : 'none';
+        Array.from(document.getElementsByClassName('cs2-cond-break')).forEach(b => b.style.display = showElements ? 'inline' : 'none');
+
+        /*
+        if (div2.innerHTML == '') {
+            div.style.display = 'none';
+            div.style.border = '0px solid black';
+            label.style.display = 'none';
+            copyButton.style.display = 'none';
+            Array.from(document.getElementsByClassName('cs2-cond-break')).forEach(b => b.style.display = 'none');
+        }
+        else {
+            div.style.display = 'block';
+            div.style.border = '3px solid black';
+            label.style.display = 'inline';
+            copyButton.style.display = 'inline';
+            Array.from(document.getElementsByClassName('cs2-cond-break')).forEach(b => b.style.display = 'inline');
+        }
+    */
+        return compOut;
+    }
+
+</script>
+
 <head>
 
     <!-- Discord preview stuff -->
@@ -33,18 +677,12 @@
 
 <body>
 
-    <!-- CS2 Schemes, need to be declared globally, and first -->
-    <script src="js/cs2Classes.js"></script>
-    <script src="js/cs2Script.js"></script>
-
     <!-- Utilities - This div contains all the elements for the utilities section -->
     <div id="utilDiv" class="mst_div topnav" style="width:85%">
         <label for="utilDiv" style="padding-right: 10px;">Utilities:</label>
-        <button id="light_mode_button" class="bhb_button" onclick="toggleLightMode()" style="width: 150px;">
-            Toggle Dark Mode
-        </button>
         <label for="font_select" style="font-size: 18px;">Preview Font:</label>
-        <select id="font_select" class="bhb_select" style="margin-left: 10px; padding: 1%; text-align: center;" onfocus="this.oldvalue = this.value" onchange="fontChanged(this.oldvalue); this.oldvalue = this.value;">
+        <select id="font_select" class="bhb_select" style="margin-left: 10px; padding: 1%; text-align: center;"
+            onfocus="this.oldvalue = this.value" onchange="fontChanged(this.oldvalue); this.oldvalue = this.value;">
             <option selected value="default"> -- System Default -- </option>
             <option value="Arial">Arial</option>
             <option value="Minecraft">Minecraft</option>
@@ -172,12 +810,6 @@
                 </button>
 
             </div>
-
-            <!-- BHB Specific functions -->
-            <script type="text/javascript" src="js/bhbFuncs.js"></script>
-            <!-- Component registration and event listeners -->
-            <script type="text/javascript" src="js/bhbRegisters.js"></script>
-
         </div>
 
         <!-- ColorSchemeV2 - This div contains all the elements for the CS2 port -->
@@ -231,10 +863,6 @@
                 </button>
 
             </div>
-
-            <!-- CS2 Specific functions -->
-            <script src="js/cs2Funcs.js"></script>
-
         </div>
 
         <!-- Manual Previewer - This div will be used to enter a nickname manually and preview it -->
@@ -250,8 +878,8 @@
 
                 <input id="mp_enter_box" type="text"
                     style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
-                    oninput="checkInputMP()" onkeyup="checkInputMP()" onkeydown="checkInputMP()" onpaste="checkInputMP()"
-                    oncut="checkInputMP()" ondrop="checkInputMP()" onchange="checkInputMP()">
+                    oninput="checkInputMP()" onkeyup="checkInputMP()" onkeydown="checkInputMP()"
+                    onpaste="checkInputMP()" oncut="checkInputMP()" ondrop="checkInputMP()" onchange="checkInputMP()">
             </div>
 
             <br class="mp-cond-break" style="display: none;">
@@ -267,10 +895,8 @@
             </div>
 
             <!-- Add a warning about black text assumption -->
-            <p style="font-weight: bold; font-size: medium; padding-left: 10px;">⚠ Warning: ⚠ <br> Uncolored text will be displayed as black text.<br> Your "true" uncolored text will vary by your rank.</p>
-                
-            <!-- MP Specific functions -->
-            <script src="js/mpFuncs.js"></script> 
+            <p style="font-weight: bold; font-size: medium; padding-left: 10px;">⚠ Warning: ⚠ <br> Uncolored text will
+                be displayed as black text.<br> Your "true" uncolored text will vary by your rank.</p>
 
         </div>
 
@@ -304,14 +930,164 @@
     <br>
     <br>
 
-    <!-- Global Intialization and Functions -->
-    <script src="js/globalFuncs.js"></script>
-    <script src="js/globalScript.js"></script>
-
-    <!-- Last setup for BHB -->
-    <script src="js/bhbScript.js"></script>
-
     <script>
+        var rawInList = Array.from(document.getElementsByClassName("code_input"));
+        var colorPickerList = Array.from(document.getElementsByClassName("color_picker"));
+
+        //Register listeners for code inputs
+        rawInList.forEach((rawIn, index) => {
+
+            //Onchange, determine new associated color picker color, and update fields if applicable
+            var types = ['keyup', 'change'];
+            types.forEach(t => {
+                rawIn.addEventListener(t, function () {
+                    unlockFields();
+                    colorPickerList[index].value = (isHexOk(rawIn.value.toLowerCase()) ? '#' + rawIn.value.toLowerCase() : colorPickerList[index].getAttribute('initial-value'));
+                    checkInput();
+                });
+            });
+
+            //Handle tab and shift tab presses from code inputs
+            rawIn.addEventListener('keydown', function (e) {
+                if (e.keyCode == 9) {
+                    e.preventDefault();
+                    if (e.shiftKey && index > 0) document.getElementById('code_input' + (index - 1)).focus();
+                    else if (index < 5) {
+                        let n = document.getElementById('code_input' + (index + 1));
+                        if (!(n.disabled)) n.focus();
+                        else document.getElementById('main_enter_box').focus();
+                    }
+                    else if (index == 5) document.getElementById('main_enter_box').focus();
+                }
+            });
+
+            //Only allow valid hex chars as codes
+            var enterTypes = ['keydown', 'keypress', 'paste', 'cut'];
+            enterTypes.forEach(function (type) {
+                rawIn.addEventListener(type, function (e) {
+
+                    //Allow cut and paste, which trigger this
+                    if (e.keyCode == undefined) return true;
+
+                    // Allow: backspace, delete, tab
+                    if ([46, 8, 9].indexOf(e.keyCode) !== -1 ||
+                        // Allow: Ctrl+A,Ctrl+C,Ctrl+V, Command+A
+                        ((e.keyCode == 65 || e.keyCode == 86 || e.keyCode == 88 || e.keyCode == 67) && (e.ctrlKey === true || e.metaKey === true)) ||
+                        // Allow: home, end, left, right, down, up
+                        (e.keyCode >= 35 && e.keyCode <= 40)) {
+                        // let it happen, don't do anything
+                        return;
+                    }
+
+                    e = e || window.event;
+                    var key = e.keyCode || e.charCode;
+
+                    if (key == 8 || key == 9 || key == 13 || key == 46 || key == 37 || key == 39) {
+                        return true;
+                    }
+
+                    //Input can only be 6 chars long, and must match the valid regex
+                    if (this.value.length >= 6 || !/^[A-Fa-f0-9]+$/.test(String.fromCharCode(key))) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            });
+
+        });
+
+        //Register listeners for color pickers
+        colorPickerList.forEach((colorPicker, index) => {
+            //Onchange, set the value of the associated code input, and unlock fields. This will also trigger the onchange event for the code input.
+            colorPicker.addEventListener('change', function () {
+                document.getElementById('code_input' + index).value = this.value.replace('#', '');
+                unlockFields();
+                checkInput();
+            });
+        });
+
+        //Register the listener for justification boxes
+        var justificationList = Array.from(document.getElementsByClassName("just_picker"));
+        justificationList.forEach((justPicker,) => {
+            //Onchange, update the cookie
+            justPicker.addEventListener('change', function () {
+                checkInput();
+                updateCookie();
+            });
+        });
+
+        //Set default values for color pickers
+        Array.from(document.getElementsByClassName("color_picker")).forEach(colorPicker => colorPicker.value = ("#000000"));
+        //Set default values for code inputs
+        Array.from(document.getElementsByClassName("code_input")).forEach(codeInput => codeInput.dispatchEvent(new Event('change')));
+        //Unlock code fields, where applicable
+        unlockFields();
+        //Check inputs on BHB
+        checkInput();
+
+        var cs2Schemes = [];
+
+        var mcc = {
+            black: new CS2ColorCode("#000000", "0"),
+            dark_blue: new CS2ColorCode("#0000AA", "1"),
+            dark_green: new CS2ColorCode("#00AA00", "2"),
+            dark_aqua: new CS2ColorCode("#00AAAA", "3"),
+            dark_red: new CS2ColorCode("#AA0000", "4"),
+            dark_purple: new CS2ColorCode("#AA00AA", "5"),
+            gold: new CS2ColorCode("#FFAA00", "6"),
+            gray: new CS2ColorCode("#AAAAAA", "7"),
+            dark_gray: new CS2ColorCode("#555555", "8"),
+            blue: new CS2ColorCode("#5555FF", "9"),
+            green: new CS2ColorCode("#55FF55", "a"),
+            aqua: new CS2ColorCode("#55FFFF", "b"),
+            red: new CS2ColorCode("#FF5555", "c"),
+            light_purple: new CS2ColorCode("#FF55FF", "d"),
+            yellow: new CS2ColorCode("#FFFF55", "e"),
+            white: new CS2ColorCode("#FFFFFF", "f")
+        }
+
+        function randomHexColor() {
+            var rndHex = '';
+            for (let i = 0; i < 6; i++) rndHex += "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
+            return rndHex;
+        }
+
+        //Random Scheme
+        var randomSchemeColors = [];
+        for (var co in mcc) randomSchemeColors.push(mcc[co]);
+        var randomScheme = new Scheme("Random", randomSchemeColors);
+        randomScheme.nextCode = function () {
+            return this.codes[Math.floor(Math.random() * this.codes.length)];
+        }
+        cs2Schemes.push(randomScheme);
+
+        //Random Hex Scheme
+        var randomHexScheme = new Scheme("Random Hex", []);
+        randomHexScheme.nextCode = function () {
+            var hex = randomHexColor();
+            return new CS2ColorCode('#' + hex, hex);
+        }
+        cs2Schemes.push(randomHexScheme);
+
+        //Rainbow Scheme
+        var rainbowSchemeColors = [mcc.dark_red, mcc.red, mcc.gold, mcc.yellow,
+        mcc.green, mcc.aqua, mcc.blue, mcc.light_purple, mcc.dark_purple];
+        cs2Schemes.push(new Scheme("Rainbow", rainbowSchemeColors));
+
+        //Ordered Scheme
+        var orderedSchemeColors = [];
+        for (var col in mcc) orderedSchemeColors.push(mcc[col]);
+        cs2Schemes.push(new Scheme("Ordered", orderedSchemeColors));
+
+        //Generate a lookup table
+        var cs2Lookup = {};
+        for (var color in mcc) {
+            cs2Lookup[mcc[color].value] = mcc[color].getHex();
+        }
+
+        document.getElementById("cookieNotice").style.display = (getCookie("user_cookie_consent") == "" ? "block" : "none");
+
+        handleBHBCookies();
         checkInputCS2();
         checkInputMP();
     </script>

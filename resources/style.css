@@ -13,10 +13,130 @@
     src: url("fonts/Arial.ttf") format("truetype");
 }
 
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #60646c;
+        color: black;
+    }
+    input[type="text"] {
+        background-color: #989ca4;
+    }
+    select {
+        background-color: #8f9196;
+    }
+    input[type="color"] {
+        background-color: #989ca4;
+    }
+    button {
+        background-color: #84868c;
+    }
+    fieldset {
+        background-color: #84868c;
+    }
+    input:disabled {
+        background-color: #787c84;
+    }
+    .mst_div {
+        background-color: #858a93;
+    }
+    
+    .slv_div {
+        background-color: #a0a4ab;
+    }
+
+    .topnav {
+        background-color: #858a93;
+    }
+    .topnav a {
+        color: #f2f2f2;
+    }
+    .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+    }
+    .topnav a.active {
+        background-color: #04AA6D;
+        color: white;
+    }
+}
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #f8f4f4;
+        color: black;
+    }
+    
+    fieldset{
+        background-color: white;
+    }
+    
+    input[type="text"] {
+        background-color: white;
+    }
+    
+    select {
+        background-color: white;
+    }
+    
+    input[type="color"] {
+        background-color: white;
+    }
+    
+    button {
+        background-color: #FFFFFF;
+        pointer-events: all;
+    }
+    
+    input:disabled {
+        background-color: #d3d3d3;
+    }
+    
+    div[class="mst_div topnav"] {
+        background-color: #FFFFFF;
+    }
+    
+    div[class="mst_div float-child"] {
+        background-color: #FFFFFF;
+    }
+    
+    div[class="slv_div"] {
+        background-color: #FFFFFF;
+    }
+
+    .topnav {
+        background-color: #FFFFFF;
+    }
+    .topnav a {
+        color: black;
+    }
+    .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+    }
+    .topnav a.active {
+        background-color: #04AA6D;
+        color: white;
+    }
+}
+
+/* Add a black background color to the top navigation */
+.topnav {
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    vertical-align: middle;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+    float: left;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
 body {
     padding: 25px;
-    background-color: #60646c;
-    color: black;
     font-size: 25px;
 }
 
@@ -25,16 +145,7 @@ h2 {
     margin-bottom: 10px;
 }
 
-input[type="text"] {
-    background-color: #989ca4;
-}
-
-select {
-    background-color: #8f9196;
-}
-
 input[type="color"] {
-    background-color: #989ca4;
     height:25px;
     margin-right: 5px;
 }
@@ -45,7 +156,6 @@ div[class="code_box"] {
 }
 
 button {
-    background-color: #84868c;
     box-shadow: 2px 2px #60646c;
     pointer-events: all;
 }
@@ -64,11 +174,6 @@ select[class="bhb_select"] {
 fieldset {
     border: 2px solid black;
     border-radius: 5px;
-    background-color: #9fa1a6;
-}
-
-input:disabled {
-    background-color: #787c84;
 }
 
 .code_input {
@@ -87,7 +192,6 @@ input:disabled {
 }
 
 .mst_div {
-    background-color: #858a93;
     box-shadow: 5px 5px;
     border: 6px solid black;
     border-radius: 10px;
@@ -95,7 +199,6 @@ input:disabled {
 }
 
 .slv_div {
-    background-color: #a0a4ab;
     box-shadow: 3px 3px;
     border: 3px solid black;
     border-radius: 10px;
