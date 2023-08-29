@@ -1047,6 +1047,22 @@
     <br>
 
     <script>
+
+        //Set default values for color pickers
+        Array.from(document.getElementsByClassName("color_picker")).forEach(colorPicker => colorPicker.value = ("#000000"));
+        //Set default values for code inputs
+        Array.from(document.getElementsByClassName("code_input")).forEach(codeInput => codeInput.dispatchEvent(new Event('change')));
+
+        document.getElementById("cookieNotice").style.display = (getCookie("user_cookie_consent") == "0" ? "block" : "none");
+
+        handleBHBCookies();
+        checkInputCS2();
+        checkInputMP();
+        //Unlock code fields, where applicable
+        unlockFields();
+        //Check inputs on BHB
+        checkInput();
+
         var rawInList = Array.from(document.getElementsByClassName("code_input"));
         var colorPickerList = Array.from(document.getElementsByClassName("color_picker"));
 
@@ -1131,21 +1147,6 @@
                 updateCookie();
             });
         });
-
-        //Set default values for color pickers
-        Array.from(document.getElementsByClassName("color_picker")).forEach(colorPicker => colorPicker.value = ("#000000"));
-        //Set default values for code inputs
-        Array.from(document.getElementsByClassName("code_input")).forEach(codeInput => codeInput.dispatchEvent(new Event('change')));
-
-        document.getElementById("cookieNotice").style.display = (getCookie("user_cookie_consent") == "0" ? "block" : "none");
-
-        handleBHBCookies();
-        checkInputCS2();
-        checkInputMP();
-        //Unlock code fields, where applicable
-        unlockFields();
-        //Check inputs on BHB
-        checkInput();
     </script>
 
 </body>
