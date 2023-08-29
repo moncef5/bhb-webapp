@@ -230,10 +230,11 @@
         setCookie('bhb_input', document.getElementById('main_enter_box').value);
 
         //Add CS2 scheme to the cookie
-        if(document.getElementById('cs2_scheme_select').value.toString().startsWith("custom")){
+        var schemeSelectVal = document.getElementById('cs2_scheme_select').value;
+        if(schemeSelectVal?.toLowerCase().startsWith("custom")){
             setCookie('cs2_scheme', "custom|" + document.getElementById('cs2_custom_scheme_enter_box').value);
         } else {
-            setCookie('cs2_scheme', document.getElementById('cs2_scheme_select').value);
+            setCookie('cs2_scheme', schemeSelectVal);
         }
 
         //Add CS2 input to the cookie
@@ -272,7 +273,7 @@
         var codes = getCookie('bhb_codes').split(',');
         var just = getCookie('justification');
         var input = getCookie('bhb_input');
-        var cs2scheme = getCookie('cs2_scheme');
+        var cs2Scheme = getCookie('cs2_scheme');
         //cs2input should only get up to the first semi-colon
         var cs2input = getCookie('cs2_input').split(';')[0];
         var mpinput = getCookie('mp_input');
@@ -296,9 +297,9 @@
         if (cs2input) document.getElementById('cs2_enter_box').value = cs2input;
 
         //Handle CS2 scheme in cookie
-        if(cs2scheme){
+        if(cs2Scheme != null){
             var scheme = cs2Scheme.split('|');
-            if(scheme[0] == "Custom"){
+            if(scheme[0].toLowerCase() == "Custom"){
                 document.getElementById('cs2_scheme_select').value = "Custom";
                 document.getElementById('cs2_custom_scheme_enter_box').value = 'custom|' + scheme[1];
             } else {
@@ -671,8 +672,6 @@
             }
             return null; // Return null for invalid values or use an appropriate default
         }).filter(value => value !== null); // Remove null values from the processed array
-
-        console.log("scheme array: " + schemeArr)
 
         var input = document.getElementById('cs2_enter_box').value;
         var customScheme = new Scheme("Custom", schemeArr);
