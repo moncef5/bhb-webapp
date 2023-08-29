@@ -34,6 +34,71 @@
         updateBHBCookies();
     }
 
+    var cs2Schemes = [];
+
+    var mcc = {
+        black: new CS2ColorCode("#000000", "0"),
+        dark_blue: new CS2ColorCode("#0000AA", "1"),
+        dark_green: new CS2ColorCode("#00AA00", "2"),
+        dark_aqua: new CS2ColorCode("#00AAAA", "3"),
+        dark_red: new CS2ColorCode("#AA0000", "4"),
+        dark_purple: new CS2ColorCode("#AA00AA", "5"),
+        gold: new CS2ColorCode("#FFAA00", "6"),
+        gray: new CS2ColorCode("#AAAAAA", "7"),
+        dark_gray: new CS2ColorCode("#555555", "8"),
+        blue: new CS2ColorCode("#5555FF", "9"),
+        green: new CS2ColorCode("#55FF55", "a"),
+        aqua: new CS2ColorCode("#55FFFF", "b"),
+        red: new CS2ColorCode("#FF5555", "c"),
+        light_purple: new CS2ColorCode("#FF55FF", "d"),
+        yellow: new CS2ColorCode("#FFFF55", "e"),
+        white: new CS2ColorCode("#FFFFFF", "f")
+    }
+
+    //Generate a lookup table
+    var cs2Lookup = {};
+    for (var color in mcc) {
+        cs2Lookup[mcc[color].value] = mcc[color].getHex();
+    }
+
+    var cs2ExactLookup = {};
+    for (var colorTwo in mcc) {
+        cs2ExactLookup[mcc[colorTwo].value] = mcc[colorTwo];
+    }
+
+    function randomHexColor() {
+        var rndHex = '';
+        for (let i = 0; i < 6; i++) rndHex += "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
+        return rndHex;
+    }
+
+    //Random Scheme
+    var randomSchemeColors = [];
+    for (var co in mcc) randomSchemeColors.push(mcc[co]);
+    var randomScheme = new Scheme("Random", randomSchemeColors);
+    randomScheme.nextCode = function () {
+        return this.codes[Math.floor(Math.random() * this.codes.length)];
+    }
+    cs2Schemes.push(randomScheme);
+
+    //Random Hex Scheme
+    var randomHexScheme = new Scheme("Random Hex", []);
+    randomHexScheme.nextCode = function () {
+        var hex = randomHexColor();
+        return new CS2ColorCode('#' + hex, hex);
+    }
+    cs2Schemes.push(randomHexScheme);
+
+    //Rainbow Scheme
+    var rainbowSchemeColors = [mcc.dark_red, mcc.red, mcc.gold, mcc.yellow,
+    mcc.green, mcc.aqua, mcc.blue, mcc.light_purple, mcc.dark_purple];
+    cs2Schemes.push(new Scheme("Rainbow", rainbowSchemeColors));
+
+    //Ordered Scheme
+    var orderedSchemeColors = [];
+    for (var col in mcc) orderedSchemeColors.push(mcc[col]);
+    cs2Schemes.push(new Scheme("Ordered", orderedSchemeColors));
+
     function buildPreviewMP(input) {
         var div = document.getElementById('mp_preview_box');
         var div2 = document.getElementById('mp_preview_label_container');
@@ -165,7 +230,11 @@
         setCookie('bhb_input', document.getElementById('main_enter_box').value);
 
         //Add CS2 scheme to the cookie
-        setCookie('cs2_scheme', document.getElementById('cs2_scheme_select').value);
+        if(document.getElementById('cs2_scheme_select').value.toString().startsWith("custom")){
+            setCookie('cs2_scheme', "custom|" + document.getElementById('cs2_custom_scheme_enter_box').value);
+        } else {
+            setCookie('cs2_scheme', document.getElementById('cs2_scheme_select').value);
+        }
 
         //Add CS2 input to the cookie
         setCookie('cs2_input', document.getElementById('cs2_enter_box').value);
@@ -227,7 +296,15 @@
         if (cs2input) document.getElementById('cs2_enter_box').value = cs2input;
 
         //Handle CS2 scheme in cookie
-        if (cs2scheme) document.getElementById('cs2_scheme_select').value = cs2scheme;
+        if(cs2scheme){
+            var scheme = cs2Scheme.split('|');
+            if(scheme[0] == "Custom"){
+                document.getElementById('cs2_scheme_select').value = "Custom";
+                document.getElementById('cs2_custom_scheme_enter_box').value = 'custom|' + scheme[1];
+            } else {
+                document.getElementById('cs2_scheme_select').value = scheme[0];
+            }
+        }
 
         //Handle MP input in cookie
         if (mpinput) document.getElementById('mp_enter_box').value = mpinput;
@@ -562,7 +639,45 @@
         var input = document.getElementById('cs2_enter_box').value;
         var scheme = document.getElementById('cs2_scheme_select').value;
 
-        if (input != '' && scheme != 'default') var cs2Output = buildPreviewCS2(input, findScheme(scheme));
+        if(scheme.toLowerCase() == 'custom'){
+            document.getElementById('custom-scheme-box').style.display = 'block';
+            checkCustomCS2Scheme();
+        } else{
+            document.getElementById('custom-scheme-box').style.display = 'none';
+            if (input != '' && scheme != 'default') var cs2Output = buildPreviewCS2(input, findScheme(scheme));
+            else cs2Output = buildPreviewCS2("", 'default');
+
+            updateBHBCookies();
+            document.getElementById('cs2_output_box').value = cs2Output;
+        }
+    }
+
+    function checkCustomCS2Scheme() {
+        var schemeInput = document.getElementById('cs2_custom_scheme_enter_box').value;
+        var separated = schemeInput.split(",");
+        //Remove all empty strings
+        separated = separated.filter(s => s != '');
+
+        // Filter out empty strings from the array
+        const filteredSeparated = separated.filter(s => s !== '');
+
+        // Create an array for the processed values
+        const schemeArr = filteredSeparated.map(s => {
+            if (s.length === 1) {
+                return cs2ExactLookup[s] || '#FFFFFF'; // Use logical OR to provide a default value
+            } else if (s.length === 7 && s[0] === '#' || s.length === 6 && /^[0-9a-fA-F]+$/.test(s)) {
+                if(s.length === 6) s = '#' + s;
+                return new CS2ColorCode(s, s);
+            }
+            return null; // Return null for invalid values or use an appropriate default
+        }).filter(value => value !== null); // Remove null values from the processed array
+
+        console.log("scheme array: " + schemeArr)
+
+        var input = document.getElementById('cs2_enter_box').value;
+        var customScheme = new Scheme("Custom", schemeArr);
+
+        if (input != '') var cs2Output = buildPreviewCS2(input, customScheme);
         else cs2Output = buildPreviewCS2("", 'default');
 
         updateBHBCookies();
@@ -829,7 +944,22 @@
                         <option value="Rainbow">Rainbow</option>
                         <option value="Ordered">Ordered</option>
                     </optgroup>
+                    <optgroup label="Custom">
+                        <option value="Custom">Custom</option>
+                    </optgroup>
                 </select>
+
+                <div id="custom-scheme-box">
+                    <label for="cs2_custom_scheme_enter_box" style="padding-right: 10px;">
+                        Custom scheme (comma-separated hex/color codes):
+                    </label>
+    
+                    <input id="cs2_custom_scheme_enter_box"
+                        style="width: 70%; height: 30px; border: 2px solid black; margin-right: 10px; border-radius: 4px; padding-left: 10px;"
+                        onpaste="checkInputCS2()" oncut="checkInputCS2()" onchange="checkInputCS2()"
+                        onkeyup="checkInputCS2()">
+                </div>
+
             </div>
 
             <div id="cs2_input_div" class="slv_div" style="width:60%">
@@ -1020,66 +1150,6 @@
         unlockFields();
         //Check inputs on BHB
         checkInput();
-
-        var cs2Schemes = [];
-
-        var mcc = {
-            black: new CS2ColorCode("#000000", "0"),
-            dark_blue: new CS2ColorCode("#0000AA", "1"),
-            dark_green: new CS2ColorCode("#00AA00", "2"),
-            dark_aqua: new CS2ColorCode("#00AAAA", "3"),
-            dark_red: new CS2ColorCode("#AA0000", "4"),
-            dark_purple: new CS2ColorCode("#AA00AA", "5"),
-            gold: new CS2ColorCode("#FFAA00", "6"),
-            gray: new CS2ColorCode("#AAAAAA", "7"),
-            dark_gray: new CS2ColorCode("#555555", "8"),
-            blue: new CS2ColorCode("#5555FF", "9"),
-            green: new CS2ColorCode("#55FF55", "a"),
-            aqua: new CS2ColorCode("#55FFFF", "b"),
-            red: new CS2ColorCode("#FF5555", "c"),
-            light_purple: new CS2ColorCode("#FF55FF", "d"),
-            yellow: new CS2ColorCode("#FFFF55", "e"),
-            white: new CS2ColorCode("#FFFFFF", "f")
-        }
-
-        function randomHexColor() {
-            var rndHex = '';
-            for (let i = 0; i < 6; i++) rndHex += "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
-            return rndHex;
-        }
-
-        //Random Scheme
-        var randomSchemeColors = [];
-        for (var co in mcc) randomSchemeColors.push(mcc[co]);
-        var randomScheme = new Scheme("Random", randomSchemeColors);
-        randomScheme.nextCode = function () {
-            return this.codes[Math.floor(Math.random() * this.codes.length)];
-        }
-        cs2Schemes.push(randomScheme);
-
-        //Random Hex Scheme
-        var randomHexScheme = new Scheme("Random Hex", []);
-        randomHexScheme.nextCode = function () {
-            var hex = randomHexColor();
-            return new CS2ColorCode('#' + hex, hex);
-        }
-        cs2Schemes.push(randomHexScheme);
-
-        //Rainbow Scheme
-        var rainbowSchemeColors = [mcc.dark_red, mcc.red, mcc.gold, mcc.yellow,
-        mcc.green, mcc.aqua, mcc.blue, mcc.light_purple, mcc.dark_purple];
-        cs2Schemes.push(new Scheme("Rainbow", rainbowSchemeColors));
-
-        //Ordered Scheme
-        var orderedSchemeColors = [];
-        for (var col in mcc) orderedSchemeColors.push(mcc[col]);
-        cs2Schemes.push(new Scheme("Ordered", orderedSchemeColors));
-
-        //Generate a lookup table
-        var cs2Lookup = {};
-        for (var color in mcc) {
-            cs2Lookup[mcc[color].value] = mcc[color].getHex();
-        }
 
         document.getElementById("cookieNotice").style.display = (getCookie("user_cookie_consent") == "0" ? "block" : "none");
 
