@@ -299,9 +299,9 @@
         //Handle CS2 scheme in cookie
         if(cs2Scheme != null){
             var scheme = cs2Scheme.split('|');
-            if(scheme[0].toLowerCase() == "Custom"){
+            if(scheme[0] == "custom"){
                 document.getElementById('cs2_scheme_select').value = "Custom";
-                document.getElementById('cs2_custom_scheme_enter_box').value = 'custom|' + scheme[1];
+                document.getElementById('cs2_custom_scheme_enter_box').value = scheme[1];
             } else {
                 document.getElementById('cs2_scheme_select').value = scheme[0];
             }
