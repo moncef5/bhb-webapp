@@ -67,9 +67,7 @@
     }
 
     function randomHexColor() {
-        var rndHex = '';
-        for (let i = 0; i < 6; i++) rndHex += "0123456789ABCDEF".charAt(Math.floor(Math.random() * 16));
-        return rndHex;
+        return Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
     }
 
     //Random Scheme
@@ -160,10 +158,6 @@
     let bhbOutput = '';
     let cs2Output = '';
 
-    function randomHexColor() {
-        return Math.floor(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
-    }
-
     /*
     Sleep for [delay] number of milliseconds
     */
@@ -230,8 +224,8 @@
         setCookie('bhb_input', document.getElementById('main_enter_box').value);
 
         //Add CS2 scheme to the cookie
-        var schemeSelectVal = document.getElementById('cs2_scheme_select').value;
-        if(schemeSelectVal?.toLowerCase().startsWith("custom")){
+        const schemeSelectVal = document.getElementById('cs2_scheme_select').value;
+        if(schemeSelectVal?.startsWith("Custom")){
             setCookie('cs2_scheme', "custom|" + document.getElementById('cs2_custom_scheme_enter_box').value);
         } else {
             setCookie('cs2_scheme', schemeSelectVal);
@@ -265,6 +259,7 @@
 
         var cookie = document.cookie;
         if (cookie == '') {
+            console.log("No cookies found - skipping cookie handling");
             checkInput();
             return;
         }
@@ -273,10 +268,21 @@
         var codes = getCookie('bhb_codes').split(',');
         var just = getCookie('justification');
         var input = getCookie('bhb_input');
-        var cs2Scheme = getCookie('cs2_scheme');
+        const cs2Scheme = getCookie('cs2_scheme');
         //cs2input should only get up to the first semi-colon
         var cs2input = getCookie('cs2_input').split(';')[0];
         var mpinput = getCookie('mp_input');
+
+        //Handle CS2 scheme in cookie
+        if(cs2Scheme != null){
+            var scheme = cs2Scheme.split('|');
+            if(scheme[0] == "custom"){
+                document.getElementById('cs2_scheme_select').value = "Custom";
+                document.getElementById('cs2_custom_scheme_enter_box').value = scheme[1];
+            } else {
+                document.getElementById('cs2_scheme_select').value = scheme[0];
+            }
+        }
 
         //Handle codes in cookie
         var fields = Array.prototype.slice.call(document.getElementsByClassName("code_input"));
@@ -295,17 +301,6 @@
 
         //Handle CS2 input in cookie
         if (cs2input) document.getElementById('cs2_enter_box').value = cs2input;
-
-        //Handle CS2 scheme in cookie
-        if(cs2Scheme != null){
-            var scheme = cs2Scheme.split('|');
-            if(scheme[0] == "custom"){
-                document.getElementById('cs2_scheme_select').value = "Custom";
-                document.getElementById('cs2_custom_scheme_enter_box').value = scheme[1];
-            } else {
-                document.getElementById('cs2_scheme_select').value = scheme[0];
-            }
-        }
 
         //Handle MP input in cookie
         if (mpinput) document.getElementById('mp_enter_box').value = mpinput;
@@ -775,10 +770,6 @@
     <link rel="icon" type="image/x-icon" href="resources/favicon.ico">
     <!-- Main styling for BHB and CS2-->
     <link rel="stylesheet" type="text/css" href="resources/style.css">
-    <!-- Light mode styling sheet-->
-    <link rel="stylesheet" type="text/css" href="resources/light.css">
-    <!-- Styling for Topbar -->
-    <link rel="stylesheet" type="text/css" href="resources/topnav.css">
 
     <!-- Chrome Webapp setup -->
     <meta name="theme-color" content="#7a7a7a">
