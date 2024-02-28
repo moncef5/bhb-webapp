@@ -719,7 +719,7 @@
         var colorPickerArr = Array.prototype.slice.call(document.getElementsByClassName("color_picker"));
         var intProgress = 0;
 
-        var maximumCodes = (document.getElementById('main_enter_box').value.length + 1) / 2;
+        var maximumCodes = Math.floor((document.getElementById('main_enter_box').value.length + 1) / 2);
         if(maximumCodes < 2) return;
         else if(maximumCodes > 6) maximumCodes = 6;
 
