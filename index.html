@@ -723,6 +723,9 @@
         if(maximumCodes < 2) return;
         else if(maximumCodes > 6) maximumCodes = 6;
 
+        //Clear all fields
+        clearAll();
+
         animate({//Timing loop
             duration: 2520,
             timing: function (timeFraction) {
