@@ -1,0 +1,80 @@
+import 'package:flutter/material.dart';
+import 'screens/login_screen.dart';
+import 'screens/home_screen.dart';
+
+void main() {
+  runApp(const BhBApp());
+}
+
+class BhBApp extends StatelessWidget {
+  const BhBApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'BhB',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.deepPurple,
+        colorScheme: ColorScheme.dark(
+          primary: Colors.amber,
+          secondary: Colors.deepPurpleAccent,
+        ),
+        fontFamily: 'Cairo',
+      ),
+      home: const LoginScreen(),
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import 'home_screen.dart';
+
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            ));
+          },
+          child: const Text('تسجيل الدخول'),
+        ),
+      ),
+    );
+  }
+}import 'package:flutter/material.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  final String walletAddress = 'TSYo3Qn3vKhWXYZx...'; // عنوان TRC20 الثابت
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('لوحة BhB')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Text('أرسل USDT (TRC20) إلى المحفظة التالية لتفعيل الباقة:'),
+            SelectableText(walletAddress),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                // هنا سنضيف التحقق من المعاملة مستقبلاً
+              },
+              child: const Text('تحقق من الدفع'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
